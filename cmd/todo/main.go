@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"todo/pkg/api"
+	"todo/internal/api"
 )
 
 func main() {
