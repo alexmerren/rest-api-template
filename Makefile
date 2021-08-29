@@ -6,12 +6,23 @@ GODIR := $(CURDIR)/bin
 	# @GOPATH=$(GOPATH) GOBIN=$(GODIR) go build -o $(BINDIR)/$(BINNAME) ./cmd/api/api.go
 # ---
 install:
-	go-get
+	@make update-server
 
-go-get:
+start-server:
+	@make build-server
+	@echo "	> Starting executable..."
+	@$(BINDIR)/$(BINNAME)
+
+update-server:
 	@echo "	> Checking if there are any missing dependencies..."
 	@GOPATH=$(GOPATH) GOBIN=$(GODIR) go get $(get)
 
-go-build:
+build-server:
 	@echo "	> Building executable..."
-	@GOPATH=$(GOPATH) GOBIN=$(GODIR) go build -o $(BINDIR)/$(BINNAME) -mod=mod main.go
+	@GOPATH=$(GOPATH) GOBIN=$(GODIR) go build -o $(BINDIR)/$(BINNAME) -mod=mod cmd/$(BINNAME)/main.go
+
+help:
+	@echo "install: Install everything necessary to run the api"
+	@echo "start-server: Build and start the api"
+	@echo "build-server: Build the api into an executable"
+	@echo "update-server: Get all the updates for the api"
