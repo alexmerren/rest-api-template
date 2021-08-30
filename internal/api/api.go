@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"todo/internal/task"
 
@@ -25,12 +26,12 @@ func MakeRoutesAndStart(port int) *Server {
 		Tasks:  t,
 	}
 	// This is where we add the routes, and their handlers.
-	r.HandleFunc("/api", s.listTasks).Methods("GET")
+	r.HandleFunc("/api", s.listAllTasks).Methods("GET")
 	r.HandleFunc("/api", s.createTask).Methods("POST")
 	return s
 }
 
-func (s *Server) listTasks(w http.ResponseWriter, r *http.Request) {
+func (s *Server) listAllTasks(w http.ResponseWriter, r *http.Request) {
 	// POST all of the contents of the tasks in the server struct.
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(s.Tasks); err != nil {
@@ -40,13 +41,14 @@ func (s *Server) listTasks(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) createTask(w http.ResponseWriter, r *http.Request) {
 	// Take in the request body and turn that into a task object.
-	task := &task.Task{}
+	task := task.NewTask()
 	if err := json.NewDecoder(r.Body).Decode(&task); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
 	// Add the task into the tasks struct.
 	s.Tasks = append(s.Tasks, task)
+	log.Printf("%s\n", task.ID)
 
 	// Respond with the information taken into the program.
 	w.Header().Set("Content-Type", "application/json")
