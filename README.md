@@ -8,7 +8,7 @@ In order to run the API back-end, you must have the latest version Golang instal
 
 This can be found [here](https://golang.org/doc/install).
 
-In order ot run the front-end, you must have the latest version of NPM installed.
+In order to run the front-end, you must have the latest version of NPM installed.
 
 This can be found [here](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
 
