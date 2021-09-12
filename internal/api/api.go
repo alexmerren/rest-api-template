@@ -2,22 +2,20 @@ package api
 
 import (
 	"encoding/json"
-	"log"
+	"fmt"
 	"net/http"
 	"todo/internal/task"
 
 	"github.com/gorilla/mux"
 )
 
-// Server type is used to encapsulate all the necessary information for a server.
 type Server struct {
 	Port   int
 	Router *mux.Router
 	Tasks  []*task.Task
 }
 
-// MakeRoutesAndStart function is called by the main function to create the server.
-func MakeRoutesAndStart(port int) *Server {
+func MakeRoutes(port int) *Server {
 	r := mux.NewRouter()
 	t := make([]*task.Task, 0)
 	s := &Server{
@@ -31,12 +29,16 @@ func MakeRoutesAndStart(port int) *Server {
 	return s
 }
 
+func (s *Server) StartServer(host string, port int) error {
+	return http.ListenAndServe(fmt.Sprintf("%s:%d", host, port), s.Router)
+}
+
 func (s *Server) listAllTasks(w http.ResponseWriter, r *http.Request) {
 	// POST all of the contents of the tasks in the server struct.
-	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(s.Tasks); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+	w.Header().Set("Content-Type", "application/json")
 }
 
 func (s *Server) createTask(w http.ResponseWriter, r *http.Request) {
@@ -48,11 +50,10 @@ func (s *Server) createTask(w http.ResponseWriter, r *http.Request) {
 
 	// Add the task into the tasks struct.
 	s.Tasks = append(s.Tasks, task)
-	log.Printf("%s\n", task.ID)
 
 	// Respond with the information taken into the program.
-	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(task); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+	w.Header().Set("Content-Type", "application/json")
 }

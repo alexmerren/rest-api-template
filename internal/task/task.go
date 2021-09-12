@@ -13,8 +13,7 @@ type Task struct {
 
 // NewTask function is called to return a new task with specified information
 func NewTask() *Task {
-	id := uuid.NewV4()
 	return &Task{
-		ID: id,
+		ID: uuid.NewV4(),
 	}
 }
