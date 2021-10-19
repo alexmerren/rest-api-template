@@ -12,5 +12,5 @@ The download for the latest version of Golang can be found [here](https://golang
 
 In order to run this project, you can type:
 
-##`make start-server`
+`make start-server`
 
