@@ -1,20 +1,16 @@
-# To Do Applicaiton
- - Golang back-end
- - React/Angular/Something front-end
+# REST API Template
+ 
+This is a template that can be used to create a RESTful API that responds to JSON requests and can store information.
 
 ## Requirements
 
-In order to run the API back-end, you must have the latest version Golang installed.
+The latest version of Golang is recommended for this project.
 
-This can be found [here](https://golang.org/doc/install).
+The download for the latest version of Golang can be found [here](https://golang.org/dl/).
 
-In order to run the front-end, you must have the latest version of NPM installed.
+## How to run
 
-This can be found [here](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
+In order to run this project, you can type:
 
-## Todo's for the project
+##`make start-server`
 
- - [ ] Make an API backend for tasks and to-dos, etc.
- - [ ] Make a database to store all of the back-end shit in
- - [ ] Make a front-end website that uses some form of framework (react/angular/next)
- - [ ] Research how to make the two things interact with each other, don't know what that's gonna mean for the project.
