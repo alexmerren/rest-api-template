@@ -2,7 +2,7 @@
 #  Definitions
 # -----------------------------------------------
 BINDIR := $(CURDIR)/bin
-BINNAME ?= todo
+BINNAME ?= golang-api-template
 GOPATH := $(CURDIR)/vendor:$(CURDIR)
 GODIR := $(CURDIR)/bin
 CMDPATH := cmd/$(BINNAME)/main.go
@@ -10,16 +10,16 @@ CMDPATH := cmd/$(BINNAME)/main.go
 # -----------------------------------------------
 #  Commands
 # -----------------------------------------------
-build-server:
-	@echo "	> Building executable..."
+build:
+	@echo "Building executable in $(BINDIR)/$(BINNAME)"
 	@GOPATH=$(GOPATH) GOBIN=$(GODIR) go build -o $(BINDIR)/$(BINNAME) -mod=vendor $(CMDPATH)
 
-start-server:
-	@make build-server
-	@echo "	> Starting executable..."
-	@echo "	> Press Ctrl+C to stop the server..."
+run:
 	@$(BINDIR)/$(BINNAME)
 
+all: build run
+
 help:
-	@echo "build-server: Build the api into an executable"
-	@echo "start-server: Build and start the api"
+	@echo "build: Build the api into an executable."
+	@echo "run: Run the api executable."
+	@echo "all: Build and run the api."
