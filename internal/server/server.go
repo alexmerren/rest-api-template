@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"golang-api-template/internal/views"
+	"golang-api-template/internal/controllers"
 
 	"github.com/gorilla/mux"
 )
@@ -21,8 +21,8 @@ func NewServer() *Server {
 
 func makeRoutes() *mux.Router {
 	r := mux.NewRouter().StrictSlash(true)
-	r.HandleFunc("/", views.TestAPI).Methods("GET")
-	r.HandleFunc("/api", views.TestAPI).Methods("GET")
+	r.HandleFunc("/", controllers.TestAPI).Methods("GET")
+	r.HandleFunc("/api", controllers.TestAPI).Methods("GET")
 	return r
 }
 
