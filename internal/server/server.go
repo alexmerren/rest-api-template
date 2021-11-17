@@ -21,8 +21,8 @@ func NewServer() *Server {
 
 func makeRoutes() *mux.Router {
 	r := mux.NewRouter().StrictSlash(true)
-	r.HandleFunc("/", controllers.TestAPI).Methods("GET")
-	r.HandleFunc("/api", controllers.TestAPI).Methods("GET")
+	r.HandleFunc("/", controllers.TestAPI)
+	r.HandleFunc("/api", controllers.TestAPI)
 	return r
 }
 

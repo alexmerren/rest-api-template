@@ -17,9 +17,17 @@ build:
 run:
 	@$(BINDIR)/$(BINNAME)
 
-all: build run
+vendor:
+	@go mod vendor
+
+lint:
+	@golangci-lint run
+
+all: vendor lint build run 
 
 help:
 	@echo "build: Build the api into an executable."
+	@echo "lint: Lint the project."
+	@echo "vendor: Download all the dependencies for the project."
 	@echo "run: Run the api executable."
 	@echo "all: Build and run the api."
