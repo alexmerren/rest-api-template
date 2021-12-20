@@ -16,10 +16,6 @@ Clone the source
 
 `git clone https://github.com/alexmerren/golang-api-template.git`
 
-Setup Dependencies
-
-`make vendor`
-
 Build and run the app
 
 `make build && make run`
