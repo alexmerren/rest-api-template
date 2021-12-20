@@ -1,0 +1,4 @@
+{
+    "ListenAddr": "8080",
+    "LogLevel": "INFO"
+}

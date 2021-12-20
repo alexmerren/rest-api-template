@@ -1,16 +1,31 @@
 # REST API Template
  
-This is a template that can be used to create a RESTful API that responds to JSON requests and can store information.
+This API template is a basic framework for a REST API
+
+## Contents
+
+ * [Requirements](#Requirements) 
+ * [Installation](#Installation) 
+ * [Configuration](#Configuration) 
 
 ## Requirements
 
-The latest version of Golang is recommended for this project.
+## Installation 
 
-The download for the latest version of Golang can be found [here](https://golang.org/dl/).
+Clone the source 
 
-## How to run
+`git clone https://github.com/alexmerren/golang-api-template.git`
 
-In order to run this project, you can type:
+Setup Dependencies
 
-`make build`
+`make vendor`
 
+Build and run the app
+
+`make build && make run`
+
+And visit
+
+`http://localhost:8080/api/test`
+
+## Configuration

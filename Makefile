@@ -1,33 +1,36 @@
 # -----------------------------------------------
 #  Definitions
 # -----------------------------------------------
-BINDIR := $(CURDIR)/bin
-BINNAME ?= golang-api-template
-GOPATH := $(CURDIR)/vendor:$(CURDIR)
-GODIR := $(CURDIR)/bin
-CMDPATH := cmd/$(BINNAME)/main.go
+GO 		 := go
+
+BINDIR 	 := $(CURDIR)/bin
+BINNAME  := golang-api-template
+MAINPATH := cmd/$(BINNAME)/main.go
 
 # -----------------------------------------------
 #  Commands
 # -----------------------------------------------
+## help: Print this message
+help:
+	@fgrep -h '##' $(MAKEFILE_LIST) | fgrep -v fgrep | column -t -s ':' | sed -e 's/## //'
+
+## build: Create the binary 
 build:
 	@echo "Building executable in $(BINDIR)/$(BINNAME)"
-	@GOPATH=$(GOPATH) GOBIN=$(GODIR) go build -o $(BINDIR)/$(BINNAME) -mod=vendor $(CMDPATH)
+	@$(GO) build -o $(BINDIR)/$(BINNAME) -mod=mod $(MAINPATH)
 
+## run: Run the binary
 run:
 	@$(BINDIR)/$(BINNAME)
 
+## vendor: Download the vendored dependencies 
 vendor:
-	@go mod vendor
+	@$(GO) mod vendor
 
+## lint: Lint the project 
 lint:
 	@golangci-lint run
 
-all: vendor lint build run 
-
-help:
-	@echo "build: Build the api into an executable."
-	@echo "lint: Lint the project."
-	@echo "vendor: Download all the dependencies for the project."
-	@echo "run: Run the api executable."
-	@echo "all: Build and run the api."
+## test: Test the project
+#test:
+	#$(GO) test 
