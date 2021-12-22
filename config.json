@@ -1,4 +1,8 @@
 {
-    "ListenAddr": "8080",
-    "LogLevel": "INFO"
+    "Host":"localhost",
+    "Port": 8080,
+    "Logger": {
+       "Level":"debug",
+       "Encoding":"console"
+    }
 }
