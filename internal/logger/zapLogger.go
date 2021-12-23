@@ -46,10 +46,10 @@ func NewZapLogger() (*ZapLogger, error) {
 	}, nil
 }
 
-func (z *ZapLogger) Error(msg string) {
+func (z *ZapLogger) Error(msg interface{}) {
 	z.logger.Error(msg)
 }
 
-func (z *ZapLogger) Info(msg string) {
+func (z *ZapLogger) Info(msg interface{}) {
 	z.logger.Info(msg)
 }

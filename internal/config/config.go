@@ -22,7 +22,6 @@ type ConfigurationLogger struct {
 type ConfigurationDatabase struct {
 	Username string `json:"Username"`
 	Password string `json:"Password"`
-	Hostname string `json:"Hostname"`
 	Name     string `json:"Name"`
 	Port     int    `json:"Port"`
 }

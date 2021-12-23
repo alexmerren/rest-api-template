@@ -1,15 +1,14 @@
 {
-    "Host":"localhost",
+    "Host":"127.0.0.1",
     "Port": 8080,
     "Logger": {
        "Level":"debug",
        "Encoding":"console"
     },
     "Database": {
-        "Username":"testAccount",
-        "Password":"testPassword",
-        "Hostname":"localhost",
-        "Name":"testTable",
+        "Username":"h9zK7nneEB",
+        "Password":"e4gJhwu2Nk5KS5Kqa5Ue",
+        "Name":"contacts",
         "Port":3306
     }
 }

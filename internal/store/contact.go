@@ -4,13 +4,13 @@ type Contact struct {
 	ID          string `json:"id"`
 	Name        string `json:"name"`
 	Email       string `json:"email"`
-	PhoneNumber string `json:"phone-number"`
+	PhoneNumber string `json:"phonenumber"`
 }
 
-func InsertContact(contact Contact) error {
-	_, err := Exec(
-		"INSERT INTO contacts (id, name, email, phonenumber) values (?, ?, ?, ?)",
-		contact.ID, contact.Name, contact.Email, contact.PhoneNumber,
+func (s *Store) InsertContact(contact Contact) error {
+	_, err := s.Exec(
+		"INSERT INTO contact (name, email, phonenumber) values (?, ?, ?)",
+		contact.Name, contact.Email, contact.PhoneNumber,
 	)
 	if err != nil {
 		return err
@@ -18,16 +18,43 @@ func InsertContact(contact Contact) error {
 	return nil
 }
 
-func GetContact(id string) (Contact, error) {
-	row, err := Query("SELECT * FROM contacts WHERE id=?", id)
+func (s *Store) GetContact(id string) (*Contact, error) {
+	contact := &Contact{}
+	result := s.QueryRow("SELECT * FROM contact WHERE id=?", id)
+	err := result.Scan(&contact.ID, &contact.Name, &contact.Email, &contact.PhoneNumber)
 	if err != nil {
 		return nil, err
 	}
+
 	return contact, nil
 }
 
-func GetAllContacts() ([]Contact, error) {}
+func (s *Store) GetAllContacts() ([]*Contact, error) {
+	rows, err := s.Query("SELECT * FROM contact")
+	if err != nil {
+		return nil, err
+	}
 
-func UpdateContact(id string, contact Contact) error {}
+	output := make([]*Contact, 0)
+	for rows.Next() {
+		contact := &Contact{}
+		err := rows.Scan(&contact.ID, &contact.Name, &contact.Email, &contact.PhoneNumber)
+		if err != nil {
+			return nil, err
+		}
+		output = append(output, contact)
+	}
+	return output, nil
+}
 
-func DeleteContact(id string) error {}
+//func (s *Store) UpdateContact(id string, contact Contact) error {
+//return nil
+//}
+
+func (s *Store) DeleteContact(id string) error {
+	_, err := s.Exec("DELETE FROM contact WHERE id=?", id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

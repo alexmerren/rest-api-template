@@ -21,7 +21,7 @@ func NewServer(logger *logger.ZapLogger, store *store.Store) (*Server, error) {
 	config := config.GetConfig()
 	server := &http.Server{
 		Addr:    fmt.Sprintf("%s:%d", config.Host, config.Port),
-		Handler: newRouter(store),
+		Handler: newRouter(store, logger),
 	}
 
 	return &Server{
@@ -31,14 +31,15 @@ func NewServer(logger *logger.ZapLogger, store *store.Store) (*Server, error) {
 	}, nil
 }
 
-func newRouter(store *store.Store) *mux.Router {
+func newRouter(store *store.Store, logger *logger.ZapLogger) *mux.Router {
 	r := mux.NewRouter()
-	h := handler.NewHandler(store)
+	h := handler.NewHandler(store, logger)
 	r.HandleFunc("/api/test/", handler.Test)
 	r.HandleFunc("/api/create/", h.CreateContact)
-	r.HandleFunc("/api/read/{id}", h.GetContact)
-	r.HandleFunc("/api/update/", h.UpdateContact)
-	r.HandleFunc("/api/delete/", h.DeleteContact)
+	r.HandleFunc("/api/read/", h.GetAllContacts)
+	r.HandleFunc("/api/read/{id}/", h.GetContact)
+	//r.HandleFunc("/api/update/", h.UpdateContact)
+	r.HandleFunc("/api/delete/{id}/", h.DeleteContact)
 	return r
 }
 

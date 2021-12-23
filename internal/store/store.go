@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"golang-api-template/internal/config"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type Store struct {
@@ -13,10 +15,10 @@ type Store struct {
 func NewStore() (*Store, error) {
 	config := config.GetConfig()
 	configString := fmt.Sprintf(
-		"%s:%s@tcp(%s:5d/%s)",
+		"%s:%s@tcp(%s:%d)/%s",
 		config.Database.Username,
 		config.Database.Password,
-		config.Database.Hostname,
+		config.Host,
 		config.Database.Port,
 		config.Database.Name,
 	)
@@ -43,7 +45,12 @@ func (s *Store) Query(query string, args ...interface{}) (*sql.Rows, error) {
 	return rows, nil
 }
 
-func (s *Store) Exec(query string, args ...interface{}) (*sql.Result, error) {
+func (s *Store) QueryRow(query string, args ...interface{}) *sql.Row {
+	row := s.db.QueryRow(query, args...)
+	return row
+}
+
+func (s *Store) Exec(query string, args ...interface{}) (sql.Result, error) {
 	tx, err := s.db.Begin()
 	if err != nil {
 		return nil, err
