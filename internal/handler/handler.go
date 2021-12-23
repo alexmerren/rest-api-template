@@ -77,19 +77,25 @@ func (h *Handler) GetAllContacts(w http.ResponseWriter, r *http.Request) {
 //}
 
 func (h *Handler) DeleteContact(w http.ResponseWriter, r *http.Request) {
-	value := mux.Vars(r)["id"]
-	if value != "" {
-		w.WriteHeader(http.StatusBadRequest)
+	contact := &store.Contact{}
+	contact, err := h.db.GetContact(mux.Vars(r)["id"])
+	if err != nil {
+		h.logger.Error(err)
+		switch err {
+		case sql.ErrNoRows:
+			w.WriteHeader(http.StatusNotFound)
+		default:
+			w.WriteHeader(http.StatusInternalServerError)
+		}
 		return
 	}
-	if err := h.db.DeleteContact(value); err != nil {
+
+	if err := h.db.DeleteContact(mux.Vars(r)["id"]); err != nil {
 		h.logger.Error(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	contact := store.Contact{
-		ID: value,
-	}
+
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(contact.ID)
+	json.NewEncoder(w).Encode(contact)
 }
