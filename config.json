@@ -4,5 +4,12 @@
     "Logger": {
        "Level":"debug",
        "Encoding":"console"
+    },
+    "Database": {
+        "Username":"testAccount",
+        "Password":"testPassword",
+        "Hostname":"localhost",
+        "Name":"testTable",
+        "Port":3306
     }
 }

@@ -1,9 +1,11 @@
 # -----------------------------------------------
 #  Definitions
 # -----------------------------------------------
-GO 		 := go
+GO := go
 
-BINDIR 	 := $(CURDIR)/bin
+BINDIR 	 	 := $(CURDIR)/bin
+INTERNAL_DIR := $(CURDIR)/internal
+
 BINNAME  := golang-api-template
 MAINPATH := cmd/$(BINNAME)/main.go
 
@@ -32,5 +34,9 @@ lint:
 	@golangci-lint run
 
 ## test: Test the project
-#test:
-	#$(GO) test 
+test:
+	@$(GO) test -coverpkg=$(INTERNAL_DIR)/... \
+		-coverprofile=coverage.out  \
+		$(INTERNAL_DIR)/... 
+	@$(GO) tool cover -func=coverage.out
+	@$(GO) tool cover -html=coverage.out -o coverage.html 

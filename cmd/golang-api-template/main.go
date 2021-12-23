@@ -4,6 +4,7 @@ import (
 	"golang-api-template/internal/config"
 	"golang-api-template/internal/logger"
 	"golang-api-template/internal/server"
+	"golang-api-template/internal/store"
 )
 
 func main() {
@@ -14,17 +15,22 @@ func main() {
 }
 
 func initApp(configFileName string) error {
-	config, err := config.ReadInConfig(configFileName)
+	err := config.ReadInConfig(configFileName)
 	if err != nil {
 		return err
 	}
 
-	logger, err := logger.NewZapLogger(config)
+	logger, err := logger.NewZapLogger()
 	if err != nil {
 		return err
 	}
 
-	server, err := server.NewServer(config, logger)
+	datastore, err := store.NewStore()
+	if err != nil {
+		return err
+	}
+
+	server, err := server.NewServer(logger, datastore)
 	if err != nil {
 		return err
 	}

@@ -5,10 +5,13 @@ import (
 	"os"
 )
 
+var config *Configuration
+
 type Configuration struct {
-	Port   int    `json:"Port"`
-	Host   string `json:"Host"`
-	Logger ConfigurationLogger
+	Port     int    `json:"Port"`
+	Host     string `json:"Host"`
+	Logger   ConfigurationLogger
+	Database ConfigurationDatabase
 }
 
 type ConfigurationLogger struct {
@@ -16,18 +19,29 @@ type ConfigurationLogger struct {
 	Encoding string `json:"Encoding"`
 }
 
-func ReadInConfig(filename string) (*Configuration, error) {
+type ConfigurationDatabase struct {
+	Username string `json:"Username"`
+	Password string `json:"Password"`
+	Hostname string `json:"Hostname"`
+	Name     string `json:"Name"`
+	Port     int    `json:"Port"`
+}
+
+func ReadInConfig(filename string) error {
 	file, err := os.Open(filename)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	defer file.Close()
 
-	config := &Configuration{}
 	jsonDecoder := json.NewDecoder(file)
-	if err = jsonDecoder.Decode(config); err != nil {
-		return nil, err
+	if err = jsonDecoder.Decode(&config); err != nil {
+		return err
 	}
 
-	return config, nil
+	return nil
+}
+
+func GetConfig() *Configuration {
+	return config
 }

@@ -11,7 +11,8 @@ type ZapLogger struct {
 	logger *zap.SugaredLogger
 }
 
-func NewZapLogger(config *config.Configuration) (*ZapLogger, error) {
+func NewZapLogger() (*ZapLogger, error) {
+	config := config.GetConfig()
 	var level zapcore.Level
 	if err := level.UnmarshalText([]byte(config.Logger.Level)); err != nil {
 		return nil, err
