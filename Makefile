@@ -3,7 +3,7 @@
 # -----------------------------------------------
 GO := go
 
-BIN_DIR 	 	 := $(CURDIR)/bin
+BIN_DIR 	 := $(CURDIR)/bin
 INTERNAL_DIR := $(CURDIR)/internal
 
 BINNAME  := golang-api-template
