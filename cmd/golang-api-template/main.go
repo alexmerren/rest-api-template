@@ -25,12 +25,12 @@ func initApp(configFileName string) error {
 		return err
 	}
 
-	datastore, err := store.NewStore()
+	store, err := store.NewStore()
 	if err != nil {
 		return err
 	}
 
-	server, err := server.NewServer(logger, datastore)
+	server, err := server.NewServer(logger, store)
 	if err != nil {
 		return err
 	}

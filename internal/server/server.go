@@ -38,7 +38,7 @@ func newRouter(store *store.Store, logger *logger.ZapLogger) *mux.Router {
 	r.HandleFunc("/api/create/", h.CreateContact)
 	r.HandleFunc("/api/read/", h.GetAllContacts)
 	r.HandleFunc("/api/read/{id}/", h.GetContact)
-	//r.HandleFunc("/api/update/", h.UpdateContact)
+	r.HandleFunc("/api/update/{id}/", h.UpdateContact)
 	r.HandleFunc("/api/delete/{id}/", h.DeleteContact)
 	return r
 }
