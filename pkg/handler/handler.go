@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"golang-api-template/internal/logger"
-	"golang-api-template/internal/store"
+	"golang-api-template/pkg/logger"
+	"golang-api-template/pkg/store"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -13,10 +13,10 @@ import (
 
 type Handler struct {
 	db     *store.Store
-	Logger *logger.ZapLogger
+	Logger logger.LoggerInterface
 }
 
-func NewHandler(store *store.Store, logger *logger.ZapLogger) *Handler {
+func NewHandler(logger logger.LoggerInterface, store *store.Store) *Handler {
 	return &Handler{
 		db:     store,
 		Logger: logger,

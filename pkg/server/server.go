@@ -2,26 +2,26 @@ package server
 
 import (
 	"fmt"
-	"golang-api-template/internal/config"
-	"golang-api-template/internal/handler"
-	"golang-api-template/internal/logger"
-	"golang-api-template/internal/store"
+	"golang-api-template/pkg/config"
+	"golang-api-template/pkg/handler"
+	"golang-api-template/pkg/logger"
+	"golang-api-template/pkg/store"
 	"net/http"
 
 	"github.com/gorilla/mux"
 )
 
 type Server struct {
-	Logger *logger.ZapLogger
+	Logger logger.LoggerInterface
 	Server *http.Server
 	Port   int
 }
 
-func NewServer(logger *logger.ZapLogger, store *store.Store) (*Server, error) {
+func NewServer(logger logger.LoggerInterface, store *store.Store) (*Server, error) {
 	config := config.GetConfig()
 	server := &http.Server{
 		Addr:    fmt.Sprintf("%s:%d", config.Host, config.Port),
-		Handler: newRouter(store, logger),
+		Handler: newRouter(logger, store),
 	}
 
 	return &Server{
@@ -31,9 +31,9 @@ func NewServer(logger *logger.ZapLogger, store *store.Store) (*Server, error) {
 	}, nil
 }
 
-func newRouter(store *store.Store, logger *logger.ZapLogger) *mux.Router {
+func newRouter(logger logger.LoggerInterface, store *store.Store) *mux.Router {
 	r := mux.NewRouter()
-	h := handler.NewHandler(store, logger)
+	h := handler.NewHandler(logger, store)
 	r.HandleFunc("/api/test/", handler.Test)
 	r.HandleFunc("/api/create/", h.CreateContact)
 	r.HandleFunc("/api/read/", h.GetAllContacts)

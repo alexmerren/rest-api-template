@@ -1,6 +1,6 @@
 package logger
 
 type LoggerInterface interface {
-	Error(msg string)
-	Info(msg string)
+	Error(msg interface{})
+	Info(msg interface{})
 }

@@ -1,10 +1,10 @@
 package main
 
 import (
-	"golang-api-template/internal/config"
-	"golang-api-template/internal/logger"
-	"golang-api-template/internal/server"
-	"golang-api-template/internal/store"
+	"golang-api-template/pkg/config"
+	"golang-api-template/pkg/logger"
+	"golang-api-template/pkg/server"
+	"golang-api-template/pkg/store"
 )
 
 func main() {

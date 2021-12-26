@@ -3,8 +3,8 @@
 # -----------------------------------------------
 GO := go
 
-BIN_DIR 	 := $(CURDIR)/bin
-INTERNAL_DIR := $(CURDIR)/internal
+BIN_DIR := $(CURDIR)/bin
+PKG_DIR := $(CURDIR)/pkg
 
 BINNAME  := golang-api-template
 MAINPATH := cmd/$(BINNAME)/main.go
@@ -41,12 +41,8 @@ lint:
 ## test: Test the project
 .PHONY: test
 test:
-	@$(GO) test -coverpkg=$(INTERNAL_DIR)/... \
+	@$(GO) test -coverpkg=$(PKG_DIR)/... \
 		-coverprofile=coverage.out  \
-		$(INTERNAL_DIR)/... 
+		$(PKG_DIR)/... 
 	@$(GO) tool cover -func=coverage.out
 	@$(GO) tool cover -html=coverage.out -o coverage.html 
-
-## rename: Rename the project
-#.PHONY: rename
-#rename:
