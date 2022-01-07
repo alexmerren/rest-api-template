@@ -11,16 +11,18 @@ type ZapLogger struct {
 	logger *zap.SugaredLogger
 }
 
-func NewZapLogger() (*ZapLogger, error) {
-	config := config.GetConfig()
+// NewZapLogger returns a new properly configured zap logger
+func NewZapLogger(config config.ConfigInterface) (*ZapLogger, error) {
+	levelString, err := config.GetString("Logger.Level")
+	encoding, err := config.GetString("Logger.Encoding")
 	var level zapcore.Level
-	if err := level.UnmarshalText([]byte(config.Logger.Level)); err != nil {
+	if err := level.UnmarshalText([]byte(levelString)); err != nil {
 		return nil, err
 	}
 
 	zapConfig := zap.Config{
 		Level:            zap.NewAtomicLevelAt(level),
-		Encoding:         config.Logger.Encoding,
+		Encoding:         encoding,
 		OutputPaths:      []string{"stdout"},
 		ErrorOutputPaths: []string{"stderr"},
 		EncoderConfig: zapcore.EncoderConfig{

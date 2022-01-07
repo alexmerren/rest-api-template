@@ -8,29 +8,29 @@ import (
 )
 
 func main() {
-	err := initApp("config.json")
+	err := initApp()
 	if err != nil {
 		panic(err)
 	}
 }
 
-func initApp(configFileName string) error {
-	err := config.ReadInConfig(configFileName)
+func initApp() error {
+	config, err := config.ReadInConfig()
 	if err != nil {
 		return err
 	}
 
-	logger, err := logger.NewZapLogger()
+	logger, err := logger.NewZapLogger(config)
 	if err != nil {
 		return err
 	}
 
-	store, err := store.NewStore()
+	store, err := store.NewStore(config)
 	if err != nil {
 		return err
 	}
 
-	server, err := server.NewServer(logger, store)
+	server, err := server.NewServer(config, logger, store)
 	if err != nil {
 		return err
 	}

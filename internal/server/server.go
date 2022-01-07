@@ -17,20 +17,27 @@ type Server struct {
 	Port   int
 }
 
-func NewServer(logger logger.LoggerInterface, store *store.Store) (*Server, error) {
-	config := config.GetConfig()
+// NewServer returns a server that can be run, with all the proper configurations
+func NewServer(config config.ConfigInterface, logger logger.LoggerInterface, store *store.Store) (*Server, error) {
+	host, err := config.GetString("Host")
+	port, err := config.GetInt("Port")
+	if err != nil {
+		return nil, err
+	}
+
 	server := &http.Server{
-		Addr:    fmt.Sprintf("%s:%d", config.Host, config.Port),
+		Addr:    fmt.Sprintf("%s:%d", host, port),
 		Handler: newRouter(logger, store),
 	}
 
 	return &Server{
 		Logger: logger,
 		Server: server,
-		Port:   config.Port,
+		Port:   port,
 	}, nil
 }
 
+// newRouter creates a new router for the server to use
 func newRouter(logger logger.LoggerInterface, store *store.Store) *mux.Router {
 	r := mux.NewRouter()
 	h := handler.NewHandler(logger, store)

@@ -16,6 +16,7 @@ type Handler struct {
 	Logger logger.LoggerInterface
 }
 
+// NewHandler creates a new handler used to handle incoming requests
 func NewHandler(logger logger.LoggerInterface, store *store.Store) *Handler {
 	return &Handler{
 		db:     store,
@@ -23,10 +24,12 @@ func NewHandler(logger logger.LoggerInterface, store *store.Store) *Handler {
 	}
 }
 
+// Test is responsible for /api/test/
 func Test(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+// CreateContact is responsible for /api/create/, and taking in parameters as request body
 func (h *Handler) CreateContact(w http.ResponseWriter, r *http.Request) {
 	// Get the input and unmarshal into a struct
 	newContact := &store.Contact{}
@@ -46,6 +49,7 @@ func (h *Handler) CreateContact(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(newContact)
 }
 
+// GetAllContacts is responsible for /api/read/{id}, returning a single contact
 func (h *Handler) GetContact(w http.ResponseWriter, r *http.Request) {
 	// Call the GetContact with the id taken from the url
 	contact, err := h.db.GetContact(mux.Vars(r)["id"])
@@ -65,6 +69,7 @@ func (h *Handler) GetContact(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(contact)
 }
 
+// GetContact is responsible for /api/read/, returning all contacts
 func (h *Handler) GetAllContacts(w http.ResponseWriter, r *http.Request) {
 	contacts, err := h.db.GetAllContacts()
 	if err != nil {
@@ -77,6 +82,7 @@ func (h *Handler) GetAllContacts(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(contacts)
 }
 
+// UpdateContact is responsible for /api/update/{id}, updating a contact with the request body
 func (h *Handler) UpdateContact(w http.ResponseWriter, r *http.Request) {
 	contact, err := h.db.GetContact(mux.Vars(r)["id"])
 	if err != nil {
@@ -102,6 +108,7 @@ func (h *Handler) UpdateContact(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(contact)
 }
 
+// DeleteContact is responsible for /api/delete/{id}, deleting a contact with the specific id
 func (h *Handler) DeleteContact(w http.ResponseWriter, r *http.Request) {
 	contact := &store.Contact{}
 	contact, err := h.db.GetContact(mux.Vars(r)["id"])

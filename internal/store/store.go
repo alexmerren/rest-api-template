@@ -12,15 +12,23 @@ type Store struct {
 	db *sql.DB
 }
 
-func NewStore() (*Store, error) {
-	config := config.GetConfig()
+func NewStore(config config.ConfigInterface) (*Store, error) {
+	databaseUser, err := config.GetString("Database.Username")
+	databasePass, err := config.GetString("Database.Password")
+	databasePort, err := config.GetInt("Database.Port")
+	databaseName, err := config.GetString("Database.Name")
+	host, err := config.GetString("Host")
+	if err != nil {
+		return nil, err
+	}
+
 	configString := fmt.Sprintf(
 		"%s:%s@tcp(%s:%d)/%s",
-		config.Database.Username,
-		config.Database.Password,
-		config.Host,
-		config.Database.Port,
-		config.Database.Name,
+		databaseUser,
+		databasePass,
+		host,
+		databasePort,
+		databaseName,
 	)
 	db, err := sql.Open("mysql", configString)
 	if err != nil {
