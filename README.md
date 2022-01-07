@@ -6,9 +6,9 @@
 
  * [Requirements](#Requirements) 
  * [Installation](#Installation) 
- * [Endpoints and Operations](#Endpoints%20and%20Operations)
+ * [Endpoints and Operations](#Endpoints-and-Operations)
  * [Configuration](#Configuration) 
- * [Make Commands](#Make%20Commands) 
+ * [Make Commands](#Make-Commands) 
 
 ## Requirements
 
