@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"golang-api-template/pkg/logger"
-	"golang-api-template/pkg/store"
+	"golang-api-template/internal/logger"
+	"golang-api-template/internal/store"
 	"net/http"
 
 	"github.com/gorilla/mux"

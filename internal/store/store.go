@@ -3,7 +3,7 @@ package store
 import (
 	"database/sql"
 	"fmt"
-	"golang-api-template/pkg/config"
+	"golang-api-template/internal/config"
 
 	_ "github.com/go-sql-driver/mysql"
 )

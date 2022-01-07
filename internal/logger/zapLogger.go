@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"golang-api-template/pkg/config"
+	"golang-api-template/internal/config"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"

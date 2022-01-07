@@ -2,10 +2,10 @@ package server
 
 import (
 	"fmt"
-	"golang-api-template/pkg/config"
-	"golang-api-template/pkg/handler"
-	"golang-api-template/pkg/logger"
-	"golang-api-template/pkg/store"
+	"golang-api-template/internal/config"
+	"golang-api-template/internal/handler"
+	"golang-api-template/internal/logger"
+	"golang-api-template/internal/store"
 	"net/http"
 
 	"github.com/gorilla/mux"
