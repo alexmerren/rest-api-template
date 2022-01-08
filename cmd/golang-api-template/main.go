@@ -32,7 +32,13 @@ func initApp() error {
 	if err != nil {
 		return err
 	}
-	defer store.CloseDB()
+
+	defer func() {
+		err = store.CloseDB()
+	}()
+	if err != nil {
+		return err
+	}
 
 	server, err := server.NewServer(context, config, logger, store)
 	if err != nil {

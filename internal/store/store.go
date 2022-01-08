@@ -13,6 +13,8 @@ type Store struct {
 	db *sql.DB
 }
 
+// nolint:ineffassign,staticcheck // This allows us to check if any of them have an error, and return that error
+// https://go.dev/doc/effective_go#redeclaration
 func NewStore(context context.Context, config config.ConfigInterface) (*Store, error) {
 	databaseUser, err := config.GetString("Database.Username")
 	databasePass, err := config.GetString("Database.Password")

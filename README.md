@@ -1,6 +1,7 @@
 # Golang REST API Example 
  
- This is an example REST API framework written in Golang, using Mux, and a Zap logger.
+ This is an example REST API framework written in Golang, using Mux for
+ routing, Zap for logging, and Koanf for config. 
 
 ## Contents
 
@@ -48,14 +49,14 @@ This template implements a few basic CRUD operations, each of which has a specif
 
 | Settings          | Description                   | Default                |
 | ----------------- | ----------------------------- | ---------------------- |
-| Host              | The host address to listen on | "localhost"            |
-| Port              | The port number to listen on  | 8080                   |
-| Logger.Level      | The default loggin level      | "debug"                |
-| Logger.Encoding   | Logging format                | "console"              |
-| Database.Username | The database username         | "h9zK7nneEB"           |
-| Database.Password | The database user's password  | "e4gJhwu2Nk5KS5Kqa5Ue" |
-| Database.Name     | The database name             | "contacts"             |
-| Database.Port     | The database port             | 3306                   |
+| host              | The host address to listen on | "localhost"            |
+| port              | The port number to listen on  | 8080                   |
+| logger.level      | The default loggin level      | "debug"                |
+| logger.encoding   | Logging format                | "console"              |
+| database.username | The database username         | "h9zK7nneEB"           |
+| database.password | The database user's password  | "e4gJhwu2Nk5KS5Kqa5Ue" |
+| database.name     | The database name             | "contacts"             |
+| database.port     | The database port             | 3306                   |
 
 ## Make Commands
 
@@ -66,5 +67,4 @@ run      Run the binary
 vendor   Download the vendored dependencies
 lint     Lint the project
 test     Test the project
-rename   Rename the project
 ```

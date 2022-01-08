@@ -1,10 +1,14 @@
 {
-    "Host":"localhost",
-    "Port": 8080,
-    "Logger.Level": "debug",
-    "Logger.Encoding": "console",
-    "Database.Username":"h9zK7nneEB",
-    "Database.Password":"e4gJhwu2Nk5KS5Kqa5Ue",
-    "Database.Name":"contacts",
-    "Database.Port":3306
+    "host":"localhost",
+    "port": 8080,
+    "logger": {
+        "level": "debug",
+        "encoding": "console"
+    },
+    "database": {
+        "username":"h9zK7nneEB",
+        "password":"e4gJhwu2Nk5KS5Kqa5Ue",
+        "name":"contacts",
+        "port":3306
+    }
 }
