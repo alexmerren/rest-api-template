@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"fmt"
 	"golang-api-template/internal/config"
 	"golang-api-template/internal/handler"
@@ -18,7 +19,7 @@ type Server struct {
 }
 
 // NewServer returns a server that can be run, with all the proper configurations
-func NewServer(config config.ConfigInterface, logger logger.LoggerInterface, store *store.Store) (*Server, error) {
+func NewServer(context context.Context, config config.ConfigInterface, logger logger.LoggerInterface, store *store.Store) (*Server, error) {
 	host, err := config.GetString("Host")
 	port, err := config.GetInt("Port")
 	if err != nil {
@@ -27,7 +28,7 @@ func NewServer(config config.ConfigInterface, logger logger.LoggerInterface, sto
 
 	server := &http.Server{
 		Addr:    fmt.Sprintf("%s:%d", host, port),
-		Handler: newRouter(logger, store),
+		Handler: newRouter(context, logger, store),
 	}
 
 	return &Server{
@@ -38,9 +39,9 @@ func NewServer(config config.ConfigInterface, logger logger.LoggerInterface, sto
 }
 
 // newRouter creates a new router for the server to use
-func newRouter(logger logger.LoggerInterface, store *store.Store) *mux.Router {
+func newRouter(context context.Context, logger logger.LoggerInterface, store *store.Store) *mux.Router {
 	r := mux.NewRouter()
-	h := handler.NewHandler(logger, store)
+	h := handler.NewHandler(context, logger, store)
 	r.HandleFunc("/api/test/", handler.Test)
 	r.HandleFunc("/api/create/", h.CreateContact)
 	r.HandleFunc("/api/read/", h.GetAllContacts)

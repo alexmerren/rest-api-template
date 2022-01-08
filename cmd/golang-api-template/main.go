@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"golang-api-template/internal/config"
 	"golang-api-template/internal/logger"
 	"golang-api-template/internal/server"
@@ -25,12 +26,15 @@ func initApp() error {
 		return err
 	}
 
-	store, err := store.NewStore(config)
+	context := context.Background()
+
+	store, err := store.NewStore(context, config)
 	if err != nil {
 		return err
 	}
+	defer store.CloseDB()
 
-	server, err := server.NewServer(config, logger, store)
+	server, err := server.NewServer(context, config, logger, store)
 	if err != nil {
 		return err
 	}

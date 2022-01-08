@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -12,15 +13,17 @@ import (
 )
 
 type Handler struct {
-	db     *store.Store
-	Logger logger.LoggerInterface
+	Context context.Context
+	db      *store.Store
+	Logger  logger.LoggerInterface
 }
 
 // NewHandler creates a new handler used to handle incoming requests
-func NewHandler(logger logger.LoggerInterface, store *store.Store) *Handler {
+func NewHandler(context context.Context, logger logger.LoggerInterface, store *store.Store) *Handler {
 	return &Handler{
-		db:     store,
-		Logger: logger,
+		Context: context,
+		db:      store,
+		Logger:  logger,
 	}
 }
 
@@ -36,7 +39,7 @@ func (h *Handler) CreateContact(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&newContact)
 
 	// Store the struct in the database
-	err := h.db.InsertContact(newContact)
+	err := h.db.InsertContact(h.Context, newContact)
 	if err != nil {
 		h.Logger.Error(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -45,14 +48,14 @@ func (h *Handler) CreateContact(w http.ResponseWriter, r *http.Request) {
 
 	// Respond with the stored struct
 	w.WriteHeader(http.StatusCreated)
-	h.Logger.Info(fmt.Sprintf("%d\t%s\t%s", http.StatusCreated, r.Method, r.URL.Path))
+	h.Logger.Debug(fmt.Sprintf("%d\t%s\t%s", http.StatusCreated, r.Method, r.URL.Path))
 	json.NewEncoder(w).Encode(newContact)
 }
 
 // GetAllContacts is responsible for /api/read/{id}, returning a single contact
 func (h *Handler) GetContact(w http.ResponseWriter, r *http.Request) {
 	// Call the GetContact with the id taken from the url
-	contact, err := h.db.GetContact(mux.Vars(r)["id"])
+	contact, err := h.db.GetContact(h.Context, mux.Vars(r)["id"])
 	// Change response text based on error type
 	if err != nil {
 		h.Logger.Error(err)
@@ -65,26 +68,26 @@ func (h *Handler) GetContact(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	h.Logger.Info(fmt.Sprintf("%d\t%s\t%s", http.StatusOK, r.Method, r.URL.Path))
+	h.Logger.Debug(fmt.Sprintf("%d\t%s\t%s", http.StatusOK, r.Method, r.URL.Path))
 	json.NewEncoder(w).Encode(contact)
 }
 
 // GetContact is responsible for /api/read/, returning all contacts
 func (h *Handler) GetAllContacts(w http.ResponseWriter, r *http.Request) {
-	contacts, err := h.db.GetAllContacts()
+	contacts, err := h.db.GetAllContacts(h.Context)
 	if err != nil {
 		h.Logger.Error(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	h.Logger.Info(fmt.Sprintf("%d\t%s\t%s", http.StatusOK, r.Method, r.URL.Path))
+	h.Logger.Debug(fmt.Sprintf("%d\t%s\t%s", http.StatusOK, r.Method, r.URL.Path))
 	json.NewEncoder(w).Encode(contacts)
 }
 
 // UpdateContact is responsible for /api/update/{id}, updating a contact with the request body
 func (h *Handler) UpdateContact(w http.ResponseWriter, r *http.Request) {
-	contact, err := h.db.GetContact(mux.Vars(r)["id"])
+	contact, err := h.db.GetContact(h.Context, mux.Vars(r)["id"])
 	if err != nil {
 		h.Logger.Error(err)
 		switch err {
@@ -97,21 +100,21 @@ func (h *Handler) UpdateContact(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewDecoder(r.Body).Decode(&contact)
-	err = h.db.UpdateContact(contact)
+	err = h.db.UpdateContact(h.Context, contact)
 	if err != nil {
 		h.Logger.Error(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	h.Logger.Info(fmt.Sprintf("%d\t%s\t%s", http.StatusOK, r.Method, r.URL.Path))
+	h.Logger.Debug(fmt.Sprintf("%d\t%s\t%s", http.StatusOK, r.Method, r.URL.Path))
 	json.NewEncoder(w).Encode(contact)
 }
 
 // DeleteContact is responsible for /api/delete/{id}, deleting a contact with the specific id
 func (h *Handler) DeleteContact(w http.ResponseWriter, r *http.Request) {
 	contact := &store.Contact{}
-	contact, err := h.db.GetContact(mux.Vars(r)["id"])
+	contact, err := h.db.GetContact(h.Context, mux.Vars(r)["id"])
 	if err != nil {
 		h.Logger.Error(err)
 		switch err {
@@ -123,13 +126,13 @@ func (h *Handler) DeleteContact(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := h.db.DeleteContact(mux.Vars(r)["id"]); err != nil {
+	if err := h.db.DeleteContact(h.Context, mux.Vars(r)["id"]); err != nil {
 		h.Logger.Error(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
-	h.Logger.Info(fmt.Sprintf("%d\t%s\t%s", http.StatusOK, r.Method, r.URL.Path))
+	h.Logger.Debug(fmt.Sprintf("%d\t%s\t%s", http.StatusOK, r.Method, r.URL.Path))
 	json.NewEncoder(w).Encode(contact)
 }

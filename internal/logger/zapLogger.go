@@ -55,3 +55,7 @@ func (z *ZapLogger) Error(msg interface{}) {
 func (z *ZapLogger) Info(msg interface{}) {
 	z.logger.Info(msg)
 }
+
+func (z *ZapLogger) Debug(msg interface{}) {
+	z.logger.Debug(msg)
+}
