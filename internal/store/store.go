@@ -1,6 +1,7 @@
 package store
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"golang-api-template/internal/config"
@@ -12,7 +13,7 @@ type Store struct {
 	db *sql.DB
 }
 
-func NewStore(config config.ConfigInterface) (*Store, error) {
+func NewStore(context context.Context, config config.ConfigInterface) (*Store, error) {
 	databaseUser, err := config.GetString("Database.Username")
 	databasePass, err := config.GetString("Database.Password")
 	databasePort, err := config.GetInt("Database.Port")
@@ -35,7 +36,7 @@ func NewStore(config config.ConfigInterface) (*Store, error) {
 		return nil, err
 	}
 
-	err = db.Ping()
+	err = db.PingContext(context)
 	if err != nil {
 		return nil, err
 	}
@@ -45,26 +46,30 @@ func NewStore(config config.ConfigInterface) (*Store, error) {
 	}, nil
 }
 
-func (s *Store) Query(query string, args ...interface{}) (*sql.Rows, error) {
-	rows, err := s.db.Query(query, args...)
+func (s *Store) CloseDB() error {
+	return s.db.Close()
+}
+
+func (s *Store) QueryContext(context context.Context, query string, args ...interface{}) (*sql.Rows, error) {
+	rows, err := s.db.QueryContext(context, query, args...)
 	if err != nil {
 		return nil, err
 	}
 	return rows, nil
 }
 
-func (s *Store) QueryRow(query string, args ...interface{}) *sql.Row {
-	row := s.db.QueryRow(query, args...)
+func (s *Store) QueryRowContext(context context.Context, query string, args ...interface{}) *sql.Row {
+	row := s.db.QueryRowContext(context, query, args...)
 	return row
 }
 
-func (s *Store) Exec(query string, args ...interface{}) (sql.Result, error) {
-	tx, err := s.db.Begin()
+func (s *Store) ExecContext(context context.Context, query string, args ...interface{}) (sql.Result, error) {
+	tx, err := s.db.BeginTx(context, nil /* opts */)
 	if err != nil {
 		return nil, err
 	}
 
-	result, err := tx.Exec(query, args...)
+	result, err := tx.ExecContext(context, query, args...)
 	if err != nil {
 		return nil, err
 	}
