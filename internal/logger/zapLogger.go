@@ -12,9 +12,15 @@ type ZapLogger struct {
 }
 
 // NewZapLogger returns a new properly configured zap logger
+// nolint:ineffassign,staticcheck // This allows us to check if any of them have an error, and return that error
+// https://go.dev/doc/effective_go#redeclaration
 func NewZapLogger(config config.ConfigInterface) (*ZapLogger, error) {
-	levelString, err := config.GetString("Logger.Level")
-	encoding, err := config.GetString("Logger.Encoding")
+	levelString, err := config.GetString("logger.level")
+	encoding, err := config.GetString("logger.encoding")
+	if err != nil {
+		return nil, err
+	}
+
 	var level zapcore.Level
 	if err := level.UnmarshalText([]byte(levelString)); err != nil {
 		return nil, err

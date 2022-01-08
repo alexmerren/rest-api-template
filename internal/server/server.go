@@ -19,6 +19,8 @@ type Server struct {
 }
 
 // NewServer returns a server that can be run, with all the proper configurations
+// nolint:ineffassign,staticcheck // This allows us to check if any of them have an error, and return that error
+// https://go.dev/doc/effective_go#redeclaration
 func NewServer(context context.Context, config config.ConfigInterface, logger logger.LoggerInterface, store *store.Store) (*Server, error) {
 	host, err := config.GetString("Host")
 	port, err := config.GetInt("Port")
