@@ -37,23 +37,22 @@ func (h *Handler) CreateContact(w http.ResponseWriter, r *http.Request) {
 	newContact := &store.Contact{}
 	err := json.NewDecoder(r.Body).Decode(&newContact)
 	if err != nil {
-		h.errorResponse(err, http.StatusBadRequest)
+		h.errorResponse(w, r, err, http.StatusBadRequest)
 		return
 	}
 
 	err = h.db.InsertContact(h.Context, newContact)
 	if err != nil {
-		h.errorResponse(err, http.StatusInternalServerError)
+		h.errorResponse(w, r, err, http.StatusInternalServerError)
 		return
 	}
 
 	err = json.NewEncoder(w).Encode(newContact)
 	if err != nil {
-		h.errorResponse(err, http.StatusInternalServerError)
+		h.errorResponse(w, r, err, http.StatusInternalServerError)
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
 	h.Logger.Debug(fmt.Sprintf("%d\t%s\t%s", http.StatusOK, r.Method, r.URL.Path))
 }
 
@@ -63,20 +62,19 @@ func (h *Handler) GetContact(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		switch err {
 		case sql.ErrNoRows:
-			h.errorResponse(err, http.StatusNotFound)
+			h.errorResponse(w, r, err, http.StatusNotFound)
 		default:
-			h.errorResponse(err, http.StatusInternalServerError)
+			h.errorResponse(w, r, err, http.StatusInternalServerError)
 		}
 		return
 	}
 
 	err = json.NewEncoder(w).Encode(contact)
 	if err != nil {
-		h.errorResponse(err, http.StatusInternalServerError)
+		h.errorResponse(w, r, err, http.StatusInternalServerError)
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
 	h.Logger.Debug(fmt.Sprintf("%d\t%s\t%s", http.StatusOK, r.Method, r.URL.Path))
 }
 
@@ -84,17 +82,16 @@ func (h *Handler) GetContact(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) GetAllContacts(w http.ResponseWriter, r *http.Request) {
 	contacts, err := h.db.GetAllContacts(h.Context)
 	if err != nil {
-		h.errorResponse(err, http.StatusInternalServerError)
+		h.errorResponse(w, r, err, http.StatusInternalServerError)
 		return
 	}
 
 	err = json.NewEncoder(w).Encode(contacts)
 	if err != nil {
-		h.errorResponse(err, http.StatusInternalServerError)
+		h.errorResponse(w, r, err, http.StatusInternalServerError)
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
 	h.Logger.Debug(fmt.Sprintf("%d\t%s\t%s", http.StatusOK, r.Method, r.URL.Path))
 }
 
@@ -104,32 +101,31 @@ func (h *Handler) UpdateContact(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		switch err {
 		case sql.ErrNoRows:
-			h.errorResponse(err, http.StatusNotFound)
+			h.errorResponse(w, r, err, http.StatusNotFound)
 		default:
-			h.errorResponse(err, http.StatusInternalServerError)
+			h.errorResponse(w, r, err, http.StatusInternalServerError)
 		}
 		return
 	}
 
 	err = json.NewDecoder(r.Body).Decode(&contact)
 	if err != nil {
-		h.errorResponse(err, http.StatusBadRequest)
+		h.errorResponse(w, r, err, http.StatusBadRequest)
 		return
 	}
 
 	err = h.db.UpdateContact(h.Context, contact)
 	if err != nil {
-		h.errorResponse(err, http.StatusInternalServerError)
+		h.errorResponse(w, r, err, http.StatusInternalServerError)
 		return
 	}
 
 	err = json.NewEncoder(w).Encode(contact)
 	if err != nil {
-		h.errorResponse(err, http.StatusInternalServerError)
+		h.errorResponse(w, r, err, http.StatusInternalServerError)
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
 	h.Logger.Debug(fmt.Sprintf("%d\t%s\t%s", http.StatusOK, r.Method, r.URL.Path))
 }
 
@@ -139,29 +135,28 @@ func (h *Handler) DeleteContact(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		switch err {
 		case sql.ErrNoRows:
-			h.errorResponse(err, http.StatusNotFound)
+			h.errorResponse(w, r, err, http.StatusNotFound)
 		default:
-			h.errorResponse(err, http.StatusInternalServerError)
+			h.errorResponse(w, r, err, http.StatusInternalServerError)
 		}
 		return
 	}
 
 	if err := h.db.DeleteContact(h.Context, mux.Vars(r)["id"]); err != nil {
-		h.errorResponse(err, http.StatusInternalServerError)
+		h.errorResponse(w, r, err, http.StatusInternalServerError)
 		return
 	}
 
 	err = json.NewEncoder(w).Encode(contact)
 	if err != nil {
-		h.errorResponse(err, http.StatusInternalServerError)
+		h.errorResponse(w, r, err, http.StatusInternalServerError)
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
 	h.Logger.Debug(fmt.Sprintf("%d\t%s\t%s", http.StatusOK, r.Method, r.URL.Path))
 }
 
-func (h *Handler) errorResponse(err error, status int) {
+func (h *Handler) errorResponse(w http.ResponseWriter, r *http.Request, err error, status int) {
 	h.Logger.Error(err)
 	w.WriteHeader(status)
 }
