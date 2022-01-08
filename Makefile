@@ -20,7 +20,7 @@ help:
 .PHONY: build
 build:
 	@echo "Building executable in $(BIN_DIR)/$(BINNAME)"
-	@$(GO) build -o $(BIN_DIR)/$(BINNAME) -mod=mod $(MAINPATH)
+	@$(GO) build -o $(BIN_DIR)/$(BINNAME) -mod=vendor $(MAINPATH)
 
 ## run: Run the binary
 .PHONY: run
