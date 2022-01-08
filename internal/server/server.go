@@ -28,9 +28,11 @@ func NewServer(context context.Context, config config.ConfigInterface, logger lo
 		return nil, err
 	}
 
+	handler := handler.NewHandler(context, logger, store)
+
 	server := &http.Server{
 		Addr:    fmt.Sprintf("%s:%d", host, port),
-		Handler: newRouter(context, logger, store),
+		Handler: newRouter(handler),
 	}
 
 	return &Server{
@@ -41,9 +43,9 @@ func NewServer(context context.Context, config config.ConfigInterface, logger lo
 }
 
 // newRouter creates a new router for the server to use
-func newRouter(context context.Context, logger logger.LoggerInterface, store *store.Store) *mux.Router {
+func newRouter(h *handler.Handler) *mux.Router {
 	r := mux.NewRouter()
-	h := handler.NewHandler(context, logger, store)
+	r.Use(h.Middleware)
 	r.HandleFunc("/api/test/", handler.Test)
 	r.HandleFunc("/api/create/", h.CreateContact)
 	r.HandleFunc("/api/read/", h.GetAllContacts)

@@ -27,6 +27,14 @@ func NewHandler(context context.Context, logger logger.LoggerInterface, store *s
 	}
 }
 
+func (h *Handler) Middleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("Content-Type", "application/json")
+		next.ServeHTTP(w, r)
+		h.Logger.Debug(fmt.Sprintf("%s\t%s", r.Method, r.URL.Path))
+	})
+}
+
 // Test is responsible for /api/test/
 func Test(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
@@ -52,8 +60,6 @@ func (h *Handler) CreateContact(w http.ResponseWriter, r *http.Request) {
 		h.errorResponse(w, r, err, http.StatusInternalServerError)
 		return
 	}
-
-	h.Logger.Debug(fmt.Sprintf("%d\t%s\t%s", http.StatusOK, r.Method, r.URL.Path))
 }
 
 // GetAllContacts is responsible for /api/read/{id}, returning a single contact
@@ -74,8 +80,6 @@ func (h *Handler) GetContact(w http.ResponseWriter, r *http.Request) {
 		h.errorResponse(w, r, err, http.StatusInternalServerError)
 		return
 	}
-
-	h.Logger.Debug(fmt.Sprintf("%d\t%s\t%s", http.StatusOK, r.Method, r.URL.Path))
 }
 
 // GetContact is responsible for /api/read/, returning all contacts
@@ -91,8 +95,6 @@ func (h *Handler) GetAllContacts(w http.ResponseWriter, r *http.Request) {
 		h.errorResponse(w, r, err, http.StatusInternalServerError)
 		return
 	}
-
-	h.Logger.Debug(fmt.Sprintf("%d\t%s\t%s", http.StatusOK, r.Method, r.URL.Path))
 }
 
 // UpdateContact is responsible for /api/update/{id}, updating a contact with the request body
@@ -125,8 +127,6 @@ func (h *Handler) UpdateContact(w http.ResponseWriter, r *http.Request) {
 		h.errorResponse(w, r, err, http.StatusInternalServerError)
 		return
 	}
-
-	h.Logger.Debug(fmt.Sprintf("%d\t%s\t%s", http.StatusOK, r.Method, r.URL.Path))
 }
 
 // DeleteContact is responsible for /api/delete/{id}, deleting a contact with the specific id
@@ -152,8 +152,6 @@ func (h *Handler) DeleteContact(w http.ResponseWriter, r *http.Request) {
 		h.errorResponse(w, r, err, http.StatusInternalServerError)
 		return
 	}
-
-	h.Logger.Debug(fmt.Sprintf("%d\t%s\t%s", http.StatusOK, r.Method, r.URL.Path))
 }
 
 func (h *Handler) errorResponse(w http.ResponseWriter, r *http.Request, err error, status int) {
