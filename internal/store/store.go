@@ -60,9 +60,12 @@ func (s *Store) QueryContext(context context.Context, query string, args ...inte
 	return rows, nil
 }
 
-func (s *Store) QueryRowContext(context context.Context, query string, args ...interface{}) *sql.Row {
+func (s *Store) QueryRowContext(context context.Context, query string, args ...interface{}) (*sql.Row, error) {
 	row := s.db.QueryRowContext(context, query, args...)
-	return row
+	if row.Err() != nil {
+		return nil, row.Err()
+	}
+	return row, nil
 }
 
 func (s *Store) ExecContext(context context.Context, query string, args ...interface{}) (sql.Result, error) {

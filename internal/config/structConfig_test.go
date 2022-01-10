@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 const validJson = `
@@ -49,7 +50,8 @@ func Test_GetInt(t *testing.T) {}
 func setupFileSystem(t *testing.T, filename string, data string, fileErr bool) func() {
 	cleanupFunc := func() {}
 	if fileErr == false {
-		ioutil.WriteFile(filename, []byte(data), 0644)
+		err := ioutil.WriteFile(filename, []byte(data), 0644)
+		require.NoError(t, err)
 		cleanupFunc = func() {
 			os.Remove(filename)
 		}

@@ -5,7 +5,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/knadh/koanf"
 	"github.com/knadh/koanf/parsers/json"
 	"github.com/knadh/koanf/providers/env"
@@ -49,8 +48,6 @@ func NewConfig(filename string) (*StructConfig, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	spew.Dump(config)
 
 	return config, nil
 }

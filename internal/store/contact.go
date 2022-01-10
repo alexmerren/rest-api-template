@@ -1,6 +1,8 @@
 package store
 
-import "context"
+import (
+	"context"
+)
 
 type Contact struct {
 	ID          string `json:"id"`
@@ -20,7 +22,11 @@ func (s *Store) InsertContact(context context.Context, contact *Contact) error {
 	}
 
 	// Get the ID of the inserted record and add that to the returning struct
-	result := s.QueryRowContext(context, "SELECT LAST_INSERT_ID()")
+	result, err := s.QueryRowContext(context, "SELECT LAST_INSERT_ID()")
+	if err != nil {
+		return err
+	}
+
 	err = result.Scan(&contact.ID)
 	if err != nil {
 		return err
@@ -32,8 +38,12 @@ func (s *Store) InsertContact(context context.Context, contact *Contact) error {
 func (s *Store) GetContact(context context.Context, id string) (*Contact, error) {
 	// Query the database for the relevant id, and scan that into the returning struct
 	contact := &Contact{}
-	result := s.QueryRowContext(context, "SELECT * FROM contact WHERE id=?", id)
-	err := result.Scan(&contact.ID, &contact.Name, &contact.Email, &contact.PhoneNumber)
+	result, err := s.QueryRowContext(context, "SELECT * FROM contact WHERE id=?", id)
+	if err != nil {
+		return nil, err
+	}
+
+	err = result.Scan(&contact.ID, &contact.Name, &contact.Email, &contact.PhoneNumber)
 	if err != nil {
 		return nil, err
 	}
