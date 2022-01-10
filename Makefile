@@ -43,9 +43,7 @@ lint:
 ## test: Test the project
 .PHONY: test
 test:
-	@$(GO) test $(TEST_MODULES) \
-		-coverprofile=coverage.out \
-		coverpkg=$(INTERNAL_DIR)/...
-	@$(GO) tool cover -html=coverage.out -o bin/test-coverage.html
-	@$(GO) tool cover -func=coverage.out \
+	@$(GO) test $(TEST_MODULES) -coverprofile=$(BIN_DIR)/coverage.out coverpkg=$(INTERNAL_DIR)/...
+	@$(GO) tool cover -html=$(BIN_DIR)/coverage.out -o $(BIN_DIR)/test-coverage.html
+	@$(GO) tool cover -func=$(BIN_DIR)/coverage.out \
 		| awk '$$1 == "total:" {printf("Total coverage: %.2f%% of statements\n", $$3)}'
