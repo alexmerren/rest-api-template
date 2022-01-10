@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/knadh/koanf"
@@ -13,10 +14,11 @@ import (
 var k = koanf.New(".")
 
 type StructConfig struct {
-	Host     string         `koanf:"host"`
-	Port     int            `koanf:"port"`
-	Logger   LoggerConfig   `koanf:"logger"`
-	Database DatabaseConfig `koanf:"database"`
+	configFile string
+	Host       string         `koanf:"host"`
+	Port       int            `koanf:"port"`
+	Logger     LoggerConfig   `koanf:"logger"`
+	Database   DatabaseConfig `koanf:"database"`
 }
 
 type LoggerConfig struct {
@@ -31,27 +33,42 @@ type DatabaseConfig struct {
 	Port     int    `koanf:"port"`
 }
 
-// ReadInConfig takes in a filename and unmarshals it into a config struct.
+// NewConfig takes in a filename and unmarshals it into a config struct.
 // nolint:errcheck // Environment provider can never return an error so we ignore it.
-func ReadInConfig() (*StructConfig, error) {
-	// Load in a config file with the given name using the json parser.
-	filename := "config.json"
-	if err := k.Load(file.Provider(filename), json.Parser()); err != nil {
+func NewConfig(filename string) (*StructConfig, error) {
+	config := &StructConfig{
+		configFile: filename,
+	}
+
+	if err := config.init(); err != nil {
 		return nil, err
 	}
 
-	// Load in the environment variables that correspond to what we want
-	k.Load(env.Provider("" /* Prefix */, "." /* Delimeter */, func(s string) string {
-		return strings.Replace(strings.ToLower(s), "_", ".", -1)
-	}), nil /* Parser */)
-
-	config := &StructConfig{}
-	err := k.Unmarshal("" /**/, config)
+	err := k.Unmarshal("" /* path */, config)
 	if err != nil {
 		return nil, err
 	}
 
 	return config, nil
+}
+
+func (s *StructConfig) init() error {
+	if _, err := os.Stat(s.configFile); err == nil {
+		// Load in a config file with the given name using the json parser.
+		if err := k.Load(file.Provider(s.configFile), json.Parser()); err != nil {
+			return fmt.Errorf("error reading config file: %w", err)
+		}
+	}
+
+	// Load in the environment variables that correspond to what we want
+	err := k.Load(env.Provider("" /* Prefix */, "." /* Delimeter */, func(s string) string {
+		return strings.Replace(strings.ToLower(s), "_", ".", -1)
+	}), nil /* Parser */)
+	if err != nil {
+		return fmt.Errorf("error reading environment variables: %w", err)
+	}
+
+	return nil
 }
 
 func (s *StructConfig) GetString(name string) (string, error) {

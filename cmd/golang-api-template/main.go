@@ -16,7 +16,7 @@ func main() {
 }
 
 func initApp() error {
-	config, err := config.ReadInConfig()
+	config, err := config.NewConfig("config.json")
 	if err != nil {
 		return err
 	}
