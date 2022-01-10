@@ -5,6 +5,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/knadh/koanf"
 	"github.com/knadh/koanf/parsers/json"
 	"github.com/knadh/koanf/providers/env"
@@ -49,6 +50,8 @@ func NewConfig(filename string) (*StructConfig, error) {
 		return nil, err
 	}
 
+	spew.Dump(config)
+
 	return config, nil
 }
 
@@ -74,7 +77,7 @@ func (s *StructConfig) init() error {
 func (s *StructConfig) GetString(name string) (string, error) {
 	value := k.String(strings.ToLower(name))
 	if value == "" {
-		return value, fmt.Errorf("Could not find value %v", name)
+		return "", fmt.Errorf("Could not find value %v", name)
 	}
 	return value, nil
 }
@@ -82,7 +85,7 @@ func (s *StructConfig) GetString(name string) (string, error) {
 func (s *StructConfig) GetInt(name string) (int, error) {
 	value := k.Int(strings.ToLower(name))
 	if value == 0 {
-		return value, fmt.Errorf("Could not find value %v", name)
+		return 0, fmt.Errorf("Could not find value %v", name)
 	}
 	return value, nil
 }
