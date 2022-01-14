@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"golang-api-template/internal/datastore"
 	"golang-api-template/internal/logger"
-	"golang-api-template/internal/store"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -14,20 +14,34 @@ import (
 
 type Handler struct {
 	Context context.Context
-	db      *store.Store
+	db      *datastore.Datastore
 	Logger  logger.LoggerInterface
+	Router  *mux.Router
 }
 
 // NewHandler creates a new handler used to handle incoming requests
-func NewHandler(context context.Context, logger logger.LoggerInterface, store *store.Store) *Handler {
-	return &Handler{
+func ProvideHandler(context context.Context, logger logger.LoggerInterface, datastore *datastore.Datastore) *Handler {
+	router := mux.NewRouter()
+
+	handler := &Handler{
 		Context: context,
-		db:      store,
+		db:      datastore,
 		Logger:  logger,
+		Router:  router,
 	}
+
+	router.Use(handler.commonMiddleware)
+	router.HandleFunc("/api/test/", Test)
+	router.HandleFunc("/api/create/", handler.CreateContact)
+	router.HandleFunc("/api/read/", handler.GetAllContacts)
+	router.HandleFunc("/api/read/{id}/", handler.GetContact)
+	router.HandleFunc("/api/update/{id}/", handler.UpdateContact)
+	router.HandleFunc("/api/delete/{id}/", handler.DeleteContact)
+
+	return handler
 }
 
-func (h *Handler) Middleware(next http.Handler) http.Handler {
+func (h *Handler) commonMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
 		next.ServeHTTP(w, r)
@@ -42,7 +56,7 @@ func Test(w http.ResponseWriter, r *http.Request) {
 
 // CreateContact is responsible for /api/create/, and taking in parameters as request body
 func (h *Handler) CreateContact(w http.ResponseWriter, r *http.Request) {
-	newContact := &store.Contact{}
+	newContact := &datastore.Contact{}
 	err := json.NewDecoder(r.Body).Decode(&newContact)
 	if err != nil {
 		h.errorResponse(w, r, err, http.StatusBadRequest)

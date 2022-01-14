@@ -2,23 +2,23 @@ package config
 
 import (
 	"fmt"
+	"io/fs"
 	"os"
 	"strings"
 
 	"github.com/knadh/koanf"
 	"github.com/knadh/koanf/parsers/json"
 	"github.com/knadh/koanf/providers/env"
-	"github.com/knadh/koanf/providers/file"
+	fsys "github.com/knadh/koanf/providers/fs"
 )
 
-var k = koanf.New(".")
-
 type StructConfig struct {
-	configFile string
-	Host       string         `koanf:"host"`
-	Port       int            `koanf:"port"`
-	Logger     LoggerConfig   `koanf:"logger"`
-	Database   DatabaseConfig `koanf:"database"`
+	filename string
+	koanf    *koanf.Koanf
+	Host     string         `koanf:"host"`
+	Port     int            `koanf:"port"`
+	Logger   LoggerConfig   `koanf:"logger"`
+	Database DatabaseConfig `koanf:"database"`
 }
 
 type LoggerConfig struct {
@@ -34,17 +34,29 @@ type DatabaseConfig struct {
 }
 
 // NewConfig takes in a filename and unmarshals it into a config struct.
-// nolint:errcheck // Environment provider can never return an error so we ignore it.
-func NewConfig(filename string) (*StructConfig, error) {
+func ProvideConfig(k *koanf.Koanf, filesystem fs.FS) (*StructConfig, error) {
 	config := &StructConfig{
-		configFile: filename,
+		filename: "config.json",
+		koanf:    k,
 	}
 
-	if err := config.init(); err != nil {
-		return nil, err
+	// Check if the file exists, if not, just use the environment variables.
+	// Load in the config file using the json parser to read the variables into the config struct
+	if _, err := os.Stat(config.filename); err == nil {
+		if err := k.Load(fsys.Provider(filesystem, config.filename), json.Parser()); err != nil {
+			return nil, fmt.Errorf("error reading config file: %w", err)
+		}
 	}
 
-	err := k.Unmarshal("" /* path */, config)
+	// Load in the environment variables that correspond to what we want in the config struct
+	err := k.Load(env.Provider("" /* Prefix */, "." /* Delimeter */, func(s string) string {
+		return strings.Replace(strings.ToLower(s), "_", ".", -1)
+	}), nil /* Parser */)
+	if err != nil {
+		return nil, fmt.Errorf("error reading environment variables: %w", err)
+	}
+
+	err = k.Unmarshal("" /* path */, config)
 	if err != nil {
 		return nil, err
 	}
@@ -52,27 +64,16 @@ func NewConfig(filename string) (*StructConfig, error) {
 	return config, nil
 }
 
-func (s *StructConfig) init() error {
-	if _, err := os.Stat(s.configFile); err == nil {
-		// Load in a config file with the given name using the json parser.
-		if err := k.Load(file.Provider(s.configFile), json.Parser()); err != nil {
-			return fmt.Errorf("error reading config file: %w", err)
-		}
-	}
+func ProvideKoanf() *koanf.Koanf {
+	return koanf.New(".")
+}
 
-	// Load in the environment variables that correspond to what we want
-	err := k.Load(env.Provider("" /* Prefix */, "." /* Delimeter */, func(s string) string {
-		return strings.Replace(strings.ToLower(s), "_", ".", -1)
-	}), nil /* Parser */)
-	if err != nil {
-		return fmt.Errorf("error reading environment variables: %w", err)
-	}
-
-	return nil
+func ProvideFilesystem() fs.FS {
+	return os.DirFS(".")
 }
 
 func (s *StructConfig) GetString(name string) (string, error) {
-	value := k.String(strings.ToLower(name))
+	value := s.koanf.String(strings.ToLower(name))
 	if value == "" {
 		return "", fmt.Errorf("Could not find value %v", name)
 	}
@@ -80,7 +81,7 @@ func (s *StructConfig) GetString(name string) (string, error) {
 }
 
 func (s *StructConfig) GetInt(name string) (int, error) {
-	value := k.Int(strings.ToLower(name))
+	value := s.koanf.Int(strings.ToLower(name))
 	if value == 0 {
 		return 0, fmt.Errorf("Could not find value %v", name)
 	}
