@@ -9,8 +9,15 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+type ConnProvider interface {
+	QueryContext(ctx context.Context, query string, args ...interface{}) (*sql.Rows, error)
+	QueryRowContext(ctx context.Context, query string, args ...interface{}) *sql.Row
+	BeginTx(ctx context.Context, opts *sql.TxOptions) (*sql.Tx, error)
+	Close() error
+}
+
 type Datastore struct {
-	db *sql.DB
+	db ConnProvider
 }
 
 // nolint:ineffassign,staticcheck // This allows us to check if any of them have an error, and return that error
