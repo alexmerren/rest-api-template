@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"golang-api-template/internal/config"
 	"golang-api-template/internal/datastore"
-	"golang-api-template/internal/handler"
 	"golang-api-template/internal/logger"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 type Server struct {
@@ -24,7 +25,7 @@ func ProvideServer(
 	config config.ConfigInterface,
 	logger logger.LoggerInterface,
 	datastore *datastore.Datastore,
-	handler *handler.Handler,
+	router *mux.Router,
 ) (*Server, error) {
 	host, err := config.GetString("Host")
 	port, err := config.GetInt("Port")
@@ -34,7 +35,7 @@ func ProvideServer(
 
 	server := &http.Server{
 		Addr:    fmt.Sprintf("%s:%d", host, port),
-		Handler: handler.Router,
+		Handler: router,
 	}
 
 	return &Server{

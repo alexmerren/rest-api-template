@@ -4,8 +4,8 @@ import (
 	"context"
 	"golang-api-template/internal/config"
 	"golang-api-template/internal/datastore"
-	"golang-api-template/internal/handler"
 	"golang-api-template/internal/logger"
+	"golang-api-template/internal/router"
 	"golang-api-template/internal/server"
 )
 
@@ -42,8 +42,8 @@ func ProvideApplication() (*Application, error) {
 		return nil, err
 	}
 
-	handler := handler.ProvideHandler(context, logger, datastore)
-	server, err := server.ProvideServer(context, config, logger, datastore, handler)
+	router := router.ProvideRouter(context, logger, datastore)
+	server, err := server.ProvideServer(context, config, logger, datastore, router)
 	if err != nil {
 		return nil, err
 	}
