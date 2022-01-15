@@ -1,6 +1,6 @@
 package config
 
-type ConfigInterface interface {
+type Config interface {
 	GetString(string) (string, error)
 	GetInt(string) (int, error)
 }

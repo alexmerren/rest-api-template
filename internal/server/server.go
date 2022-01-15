@@ -12,7 +12,7 @@ import (
 )
 
 type Server struct {
-	Logger logger.LoggerInterface
+	Logger logger.Logger
 	Server *http.Server
 	Port   int
 }
@@ -22,8 +22,8 @@ type Server struct {
 // https://go.dev/doc/effective_go#redeclaration
 func ProvideServer(
 	context context.Context,
-	config config.ConfigInterface,
-	logger logger.LoggerInterface,
+	config config.Config,
+	logger logger.Logger,
 	datastore *datastore.Datastore,
 	router *mux.Router,
 ) (*Server, error) {

@@ -13,13 +13,13 @@ import (
 )
 
 var (
-	log logger.LoggerInterface
+	log logger.Logger
 	ctx context.Context
 	db  *datastore.Datastore
 )
 
 // NewHandler creates a new handler used to handle incoming requests
-func ProvideRouter(context context.Context, logger logger.LoggerInterface, datastore *datastore.Datastore) *mux.Router {
+func ProvideRouter(context context.Context, logger logger.Logger, datastore *datastore.Datastore) *mux.Router {
 	ctx = context
 	log = logger
 	db = datastore

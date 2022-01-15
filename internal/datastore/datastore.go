@@ -22,7 +22,7 @@ type Datastore struct {
 
 // nolint:ineffassign,staticcheck // This allows us to check if any of them have an error, and return that error
 // https://go.dev/doc/effective_go#redeclaration
-func ProvideDatastore(context context.Context, config config.ConfigInterface) (*Datastore, error) {
+func ProvideDatastore(context context.Context, config config.Config) (*Datastore, error) {
 	databaseUser, err := config.GetString("Database.Username")
 	databasePass, err := config.GetString("Database.Password")
 	databasePort, err := config.GetInt("Database.Port")

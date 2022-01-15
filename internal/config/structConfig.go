@@ -12,9 +12,9 @@ import (
 	fsys "github.com/knadh/koanf/providers/fs"
 )
 
+var k Koanf
+
 type StructConfig struct {
-	filename string
-	koanf    *koanf.Koanf
 	Host     string         `koanf:"host"`
 	Port     int            `koanf:"port"`
 	Logger   LoggerConfig   `koanf:"logger"`
@@ -33,17 +33,27 @@ type DatabaseConfig struct {
 	Port     int    `koanf:"port"`
 }
 
+// This Koanf interface is used to create mocks for testing
+type Koanf interface {
+	Load(p koanf.Provider, pa koanf.Parser, opts ...koanf.Option) error
+	Unmarshal(path string, o interface{}) error
+	String(name string) string
+	Int(name string) int
+}
+
+type Filesystem interface {
+	Open(name string) (fs.File, error)
+}
+
 // NewConfig takes in a filename and unmarshals it into a config struct.
-func ProvideConfig(k *koanf.Koanf, filesystem fs.FS) (*StructConfig, error) {
-	config := &StructConfig{
-		filename: "config.json",
-		koanf:    k,
-	}
+func ProvideConfig(koanf Koanf, filesystem Filesystem) (*StructConfig, error) {
+	filename := "config.json"
+	k = koanf
 
 	// Check if the file exists, if not, just use the environment variables.
 	// Load in the config file using the json parser to read the variables into the config struct
-	if _, err := os.Stat(config.filename); err == nil {
-		if err := k.Load(fsys.Provider(filesystem, config.filename), json.Parser()); err != nil {
+	if _, err := filesystem.Open(filename); err == nil {
+		if err := k.Load(fsys.Provider(filesystem, filename), json.Parser()); err != nil {
 			return nil, fmt.Errorf("error reading config file: %w", err)
 		}
 	}
@@ -56,34 +66,35 @@ func ProvideConfig(k *koanf.Koanf, filesystem fs.FS) (*StructConfig, error) {
 		return nil, fmt.Errorf("error reading environment variables: %w", err)
 	}
 
+	config := &StructConfig{}
 	err = k.Unmarshal("" /* path */, config)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error unmarshalling to config struct: %v", err)
 	}
 
 	return config, nil
 }
 
-func ProvideKoanf() *koanf.Koanf {
+func ProvideKoanf() Koanf {
 	return koanf.New(".")
 }
 
-func ProvideFilesystem() fs.FS {
+func ProvideFilesystem() Filesystem {
 	return os.DirFS(".")
 }
 
 func (s *StructConfig) GetString(name string) (string, error) {
-	value := s.koanf.String(strings.ToLower(name))
+	value := k.String(strings.ToLower(name))
 	if value == "" {
-		return "", fmt.Errorf("Could not find value %v", name)
+		return "", fmt.Errorf("could not find value %v", name)
 	}
 	return value, nil
 }
 
 func (s *StructConfig) GetInt(name string) (int, error) {
-	value := s.koanf.Int(strings.ToLower(name))
+	value := k.Int(strings.ToLower(name))
 	if value == 0 {
-		return 0, fmt.Errorf("Could not find value %v", name)
+		return 0, fmt.Errorf("could not find value %v", name)
 	}
 	return value, nil
 }
