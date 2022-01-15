@@ -67,4 +67,5 @@ run      Run the binary
 vendor   Download the vendored dependencies
 lint     Lint the project
 test     Test the project
+mocks    Generate mocks for the project
 ```
