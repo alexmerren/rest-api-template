@@ -9,6 +9,14 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+type Database interface {
+	InsertContact(context context.Context, contact *Contact) error
+	GetContact(context context.Context, id string) (*Contact, error)
+	GetAllContacts(context context.Context) ([]*Contact, error)
+	UpdateContact(context context.Context, contact *Contact) error
+	DeleteContact(context context.Context, id string) error
+}
+
 type ConnProvider interface {
 	QueryContext(ctx context.Context, query string, args ...interface{}) (*sql.Rows, error)
 	QueryRowContext(ctx context.Context, query string, args ...interface{}) *sql.Row
@@ -20,16 +28,30 @@ type Datastore struct {
 	db ConnProvider
 }
 
-// nolint:ineffassign,staticcheck // This allows us to check if any of them have an error, and return that error
-// https://go.dev/doc/effective_go#redeclaration
 func ProvideDatastore(context context.Context, config config.Config) (*Datastore, error) {
-	databaseUser, err := config.GetString("Database.Username")
-	databasePass, err := config.GetString("Database.Password")
-	databasePort, err := config.GetInt("Database.Port")
-	databaseName, err := config.GetString("Database.Name")
-	host, err := config.GetString("Host")
-	if err != nil {
-		return nil, err
+	databaseUser, userErr := config.GetString("Database.Username")
+	if userErr != nil {
+		return nil, userErr
+	}
+
+	databasePass, passErr := config.GetString("Database.Password")
+	if passErr != nil {
+		return nil, passErr
+	}
+
+	databasePort, portErr := config.GetInt("Database.Port")
+	if portErr != nil {
+		return nil, portErr
+	}
+
+	databaseName, nameErr := config.GetString("Database.Name")
+	if nameErr != nil {
+		return nil, nameErr
+	}
+
+	host, hostErr := config.GetString("Host")
+	if hostErr != nil {
+		return nil, hostErr
 	}
 
 	configString := fmt.Sprintf(

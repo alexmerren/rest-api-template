@@ -26,18 +26,18 @@ func ProvideRouter(context context.Context, logger logger.Logger, datastore *dat
 
 	router := mux.NewRouter()
 	router.Use(commonMiddleware)
-	router.HandleFunc("/api/test/", Test)
-	router.HandleFunc("/api/create/", CreateContact)
-	router.HandleFunc("/api/read/", GetAllContacts)
-	router.HandleFunc("/api/read/{id}/", GetContact)
-	router.HandleFunc("/api/update/{id}/", UpdateContact)
-	router.HandleFunc("/api/delete/{id}/", DeleteContact)
+	router.HandleFunc("/api/test/", Test).Methods("GET")
+	router.HandleFunc("/api/read/", GetAllContacts).Methods("GET")
+	router.HandleFunc("/api/read/{id}/", GetContact).Methods("GET")
+	router.HandleFunc("/api/create/", CreateContact).Methods("POST")
+	router.HandleFunc("/api/update/{id}/", UpdateContact).Methods("POST")
+	router.HandleFunc("/api/delete/{id}/", DeleteContact).Methods("POST")
 	return router
 }
 
 func commonMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Add("Context-Type", "application/json")
+		w.Header().Add("Content-Type", "application/json")
 		log.Debug(fmt.Sprintf("%s\t%s", r.Method, r.URL.Path))
 		next.ServeHTTP(w, r)
 	})
