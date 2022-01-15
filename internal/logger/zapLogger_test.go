@@ -83,4 +83,20 @@ func Test_ProvideLogger_ConfigErrors(t *testing.T) {
 	}
 }
 
-func Test_ProvideLogger_BuildError(t *testing.T) {}
+func Test_ProvideLogger_UnmarshalTextErr(t *testing.T) {
+	mockConfig := new(mocks.Config)
+	mockConfig.On("GetString", "logger.level").Return("INVALID_STRING", nil)
+	mockConfig.On("GetString", "logger.encoding").Return("console", nil)
+	zapLogger, loggerErr := logger.ProvideLogger(mockConfig)
+	assert.Nil(t, zapLogger, "ProvideLogger returned logger unexpectedly")
+	assert.EqualError(t, loggerErr, "unrecognized level: \"INVALID_STRING\"", "ProvideLogger did not return an error unexpectedly")
+}
+
+func Test_ProvideLogger_BuildError(t *testing.T) {
+	mockConfig := new(mocks.Config)
+	mockConfig.On("GetString", "logger.level").Return("info", nil)
+	mockConfig.On("GetString", "logger.encoding").Return("INVALID_STRING", nil)
+	zapLogger, loggerErr := logger.ProvideLogger(mockConfig)
+	assert.Nil(t, zapLogger, "ProvideLogger returned logger unexpectedly")
+	assert.EqualError(t, loggerErr, "no encoder registered for name \"INVALID_STRING\"", "ProvideLogger did not return an error unexpectedly")
+}

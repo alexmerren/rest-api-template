@@ -56,10 +56,6 @@ func ProvideLogger(config config.Config) (*ZapLogger, error) {
 	}, nil
 }
 
-func (z *ZapLogger) Sync() {
-	z.logger.Sync()
-}
-
 func (z *ZapLogger) Error(msg interface{}) {
 	z.logger.Error(msg)
 }

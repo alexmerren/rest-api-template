@@ -61,6 +61,5 @@ func (a *Application) Start() {
 }
 
 func (a *Application) Stop() {
-	a.logger.Sync()
 	_ = a.datastore.CloseDB()
 }
