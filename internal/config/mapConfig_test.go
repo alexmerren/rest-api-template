@@ -27,11 +27,13 @@ func Test_ProvideConfig_File_HappyPath(t *testing.T) {
 	koanf := config.ProvideKoanf()
 
 	configStruct, configErr := config.ProvideConfig(koanf, testFilesystem)
+	portValue, portErr := configStruct.GetInt("port")
 
 	assert.NoError(t, configErr, "ProvideConfig returned an error unexpectedly")
 	assert.NotNil(t, configStruct, "ProvideConfig returned StructConfig unexpectedly")
-	assert.IsType(t, configStruct, &config.StructConfig{}, "ProvideConfig returned wrong type")
-	assert.Equal(t, configStruct.Port, 8080, "config.Port should be 8080")
+	assert.IsType(t, configStruct, &config.MapConfig{}, "ProvideConfig returned wrong type")
+	assert.NoError(t, portErr, "GetInt shoudl not return error")
+	assert.Equal(t, 8080, portValue, "config.Port should be 8080")
 }
 
 func Test_ProvideConfig_File_ReadingError(t *testing.T) {
@@ -41,9 +43,10 @@ func Test_ProvideConfig_File_ReadingError(t *testing.T) {
 	mockKoanf := new(mocks.Koanf)
 	mockKoanf.On("Load", mock.AnythingOfType("*fs.FS"), json.Parser()).Return(errors.New("mock error"))
 	mockKoanf.On("Load", mock.AnythingOfType("*env.Env"), nil).Return(nil).Run(func(args mock.Arguments) {})
-	mockKoanf.On("Unmarshal", "", &config.StructConfig{}).Return(nil)
+	mockKoanf.On("Unmarshal", "", &config.MapConfig{}).Return(nil)
 
 	configStruct, configErr := config.ProvideConfig(mockKoanf, mockFilesystem)
+
 	assert.EqualError(t, configErr, "error reading config file: mock error", "ProvideConfig did not return an error unexpectedly")
 	assert.Nil(t, configStruct, "ProvideConfig returned StructConfig unexpectedly")
 }
@@ -55,10 +58,12 @@ func Test_ProvideConfig_Env_HappyPath(t *testing.T) {
 	koanf := config.ProvideKoanf()
 	filesystem := config.ProvideFilesystem()
 	config, configErr := config.ProvideConfig(koanf, filesystem)
+	encodingValue, encodingErr := config.GetString("logger.encoding")
 
 	assert.NoError(t, configErr, "")
 	assert.NotNil(t, config, "")
-	assert.Equal(t, config.Logger.Encoding, "console", "logger.encoding should be \"console\"")
+	assert.NoError(t, encodingErr, "GetString should not return error")
+	assert.Equal(t, "console", encodingValue, "logger.encoding should be \"console\"")
 }
 
 func Test_ProvideConfig_Env_ReadingError(t *testing.T) {
@@ -66,7 +71,7 @@ func Test_ProvideConfig_Env_ReadingError(t *testing.T) {
 	mockKoanf := new(mocks.Koanf)
 	mockKoanf.On("Load", mock.AnythingOfType("*fs.FS"), json.Parser()).Return(nil)
 	mockKoanf.On("Load", mock.AnythingOfType("*env.Env"), nil).Return(errors.New("mock error")).Run(func(args mock.Arguments) {})
-	mockKoanf.On("Unmarshal", "", &config.StructConfig{}).Return(nil)
+	mockKoanf.On("Unmarshal", "", &config.MapConfig{}).Return(nil)
 
 	configStruct, configErr := config.ProvideConfig(mockKoanf, filesystem)
 
@@ -79,7 +84,7 @@ func Test_ProvideConfig_UnmarshalError(t *testing.T) {
 	mockKoanf := new(mocks.Koanf)
 	mockKoanf.On("Load", mock.AnythingOfType("*fs.FS"), json.Parser()).Return(nil)
 	mockKoanf.On("Load", mock.AnythingOfType("*env.Env"), nil).Return(nil).Run(func(args mock.Arguments) {})
-	mockKoanf.On("Unmarshal", "", &config.StructConfig{}).Return(errors.New("mock error"))
+	mockKoanf.On("Unmarshal", "", &config.MapConfig{}).Return(errors.New("mock error"))
 
 	configStruct, configErr := config.ProvideConfig(mockKoanf, filesystem)
 
@@ -102,14 +107,14 @@ func Test_StructConfig_GetString_HappyPath(t *testing.T) {
 	mockKoanf := new(mocks.Koanf)
 	mockKoanf.On("Load", mock.AnythingOfType("*fs.FS"), json.Parser()).Return(errors.New("mock error"))
 	mockKoanf.On("Load", mock.AnythingOfType("*env.Env"), nil).Return(nil).Run(func(args mock.Arguments) {})
-	mockKoanf.On("Unmarshal", "", &config.StructConfig{}).Return(nil)
+	mockKoanf.On("Unmarshal", "", &config.MapConfig{}).Return(nil)
 	mockKoanf.On("String", "testvalue").Return("testValueReturn")
 
 	configStruct, configErr := config.ProvideConfig(mockKoanf, filesystem)
 	require.NoError(t, configErr)
 
 	value, err := configStruct.GetString("testvalue")
-	assert.Equal(t, value, "testValueReturn", "GetString did not return a value unexpectedly")
+	assert.Equal(t, "testValueReturn", value, "GetString did not return a value unexpectedly")
 	assert.NoError(t, err, "could not find value testvalue", "GetString returned an error unexpectedly")
 }
 
@@ -118,7 +123,7 @@ func Test_StructConfig_GetString_ValueNotFoundError(t *testing.T) {
 	mockKoanf := new(mocks.Koanf)
 	mockKoanf.On("Load", mock.AnythingOfType("*fs.FS"), json.Parser()).Return(errors.New("mock error"))
 	mockKoanf.On("Load", mock.AnythingOfType("*env.Env"), nil).Return(nil).Run(func(args mock.Arguments) {})
-	mockKoanf.On("Unmarshal", "", &config.StructConfig{}).Return(nil)
+	mockKoanf.On("Unmarshal", "", &config.MapConfig{}).Return(nil)
 	mockKoanf.On("String", "testvalue").Return("")
 
 	configStruct, configErr := config.ProvideConfig(mockKoanf, filesystem)
@@ -135,7 +140,7 @@ func Test_StructConfig_GetInt_HappyPath(t *testing.T) {
 	mockKoanf := new(mocks.Koanf)
 	mockKoanf.On("Load", mock.AnythingOfType("*fs.FS"), json.Parser()).Return(errors.New("mock error"))
 	mockKoanf.On("Load", mock.AnythingOfType("*env.Env"), nil).Return(nil).Run(func(args mock.Arguments) {})
-	mockKoanf.On("Unmarshal", "", &config.StructConfig{}).Return(nil)
+	mockKoanf.On("Unmarshal", "", &config.MapConfig{}).Return(nil)
 	mockKoanf.On("Int", "testvalue").Return(1)
 
 	configStruct, configErr := config.ProvideConfig(mockKoanf, filesystem)
@@ -151,7 +156,7 @@ func Test_StructConfig_GetInt_ValueNotFoundError(t *testing.T) {
 	mockKoanf := new(mocks.Koanf)
 	mockKoanf.On("Load", mock.AnythingOfType("*fs.FS"), json.Parser()).Return(errors.New("mock error"))
 	mockKoanf.On("Load", mock.AnythingOfType("*env.Env"), nil).Return(nil).Run(func(args mock.Arguments) {})
-	mockKoanf.On("Unmarshal", "", &config.StructConfig{}).Return(nil)
+	mockKoanf.On("Unmarshal", "", &config.MapConfig{}).Return(nil)
 	mockKoanf.On("Int", "testvalue").Return(0)
 
 	configStruct, configErr := config.ProvideConfig(mockKoanf, filesystem)

@@ -19,6 +19,7 @@ func main() {
 }
 
 type Application struct {
+	logger    *logger.ZapLogger
 	server    *server.Server
 	datastore *datastore.Datastore
 }
@@ -49,6 +50,7 @@ func ProvideApplication() (*Application, error) {
 	}
 
 	return &Application{
+		logger:    logger,
 		server:    server,
 		datastore: datastore,
 	}, nil
@@ -59,5 +61,6 @@ func (a *Application) Start() {
 }
 
 func (a *Application) Stop() {
-	a.datastore.CloseDB()
+	a.logger.Sync()
+	_ = a.datastore.CloseDB()
 }

@@ -14,24 +14,7 @@ import (
 
 var k Koanf
 
-type StructConfig struct {
-	Host     string         `koanf:"host"`
-	Port     int            `koanf:"port"`
-	Logger   LoggerConfig   `koanf:"logger"`
-	Database DatabaseConfig `koanf:"database"`
-}
-
-type LoggerConfig struct {
-	Level    string `koanf:"level"`
-	Encoding string `koanf:"encoding"`
-}
-
-type DatabaseConfig struct {
-	Username string `koanf:"username"`
-	Password string `koanf:"password"`
-	Name     string `koanf:"name"`
-	Port     int    `koanf:"port"`
-}
+type MapConfig struct{}
 
 // This Koanf interface is used to create mocks for testing
 type Koanf interface {
@@ -46,7 +29,7 @@ type Filesystem interface {
 }
 
 // NewConfig takes in a filename and unmarshals it into a config struct.
-func ProvideConfig(koanf Koanf, filesystem Filesystem) (*StructConfig, error) {
+func ProvideConfig(koanf Koanf, filesystem Filesystem) (Config, error) {
 	filename := "config.json"
 	k = koanf
 
@@ -66,7 +49,7 @@ func ProvideConfig(koanf Koanf, filesystem Filesystem) (*StructConfig, error) {
 		return nil, fmt.Errorf("error reading environment variables: %w", err)
 	}
 
-	config := &StructConfig{}
+	config := &MapConfig{}
 	err = k.Unmarshal("" /* path */, config)
 	if err != nil {
 		return nil, fmt.Errorf("error unmarshalling to config struct: %v", err)
@@ -83,7 +66,7 @@ func ProvideFilesystem() Filesystem {
 	return os.DirFS(".")
 }
 
-func (s *StructConfig) GetString(name string) (string, error) {
+func (c *MapConfig) GetString(name string) (string, error) {
 	value := k.String(strings.ToLower(name))
 	if value == "" {
 		return "", fmt.Errorf("could not find value %v", name)
@@ -91,7 +74,7 @@ func (s *StructConfig) GetString(name string) (string, error) {
 	return value, nil
 }
 
-func (s *StructConfig) GetInt(name string) (int, error) {
+func (c *MapConfig) GetInt(name string) (int, error) {
 	value := k.Int(strings.ToLower(name))
 	if value == 0 {
 		return 0, fmt.Errorf("could not find value %v", name)

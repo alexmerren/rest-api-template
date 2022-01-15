@@ -18,8 +18,6 @@ type Server struct {
 }
 
 // NewServer returns a server that can be run, with all the proper configurations
-// nolint:ineffassign,staticcheck // This allows us to check if any of them have an error, and return that error
-// https://go.dev/doc/effective_go#redeclaration
 func ProvideServer(
 	context context.Context,
 	config config.Config,
@@ -27,10 +25,14 @@ func ProvideServer(
 	datastore *datastore.Datastore,
 	router *mux.Router,
 ) (*Server, error) {
-	host, err := config.GetString("Host")
-	port, err := config.GetInt("Port")
-	if err != nil {
-		return nil, err
+	host, hostErr := config.GetString("Host")
+	if hostErr != nil {
+		return nil, hostErr
+	}
+
+	port, portErr := config.GetInt("Port")
+	if portErr != nil {
+		return nil, portErr
 	}
 
 	server := &http.Server{

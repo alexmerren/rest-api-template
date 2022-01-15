@@ -12,13 +12,15 @@ type ZapLogger struct {
 }
 
 // NewZapLogger returns a new properly configured zap logger
-// nolint:ineffassign,staticcheck // This allows us to check if any of them have an error, and return that error
-// https://go.dev/doc/effective_go#redeclaration
 func ProvideLogger(config config.Config) (*ZapLogger, error) {
-	levelString, err := config.GetString("logger.level")
-	encoding, err := config.GetString("logger.encoding")
-	if err != nil {
-		return nil, err
+	levelString, levelErr := config.GetString("logger.level")
+	if levelErr != nil {
+		return nil, levelErr
+	}
+
+	encoding, encodingErr := config.GetString("logger.encoding")
+	if encodingErr != nil {
+		return nil, encodingErr
 	}
 
 	var level zapcore.Level
@@ -52,6 +54,10 @@ func ProvideLogger(config config.Config) (*ZapLogger, error) {
 	return &ZapLogger{
 		logger: logger.Sugar(),
 	}, nil
+}
+
+func (z *ZapLogger) Sync() {
+	z.logger.Sync()
 }
 
 func (z *ZapLogger) Error(msg interface{}) {
