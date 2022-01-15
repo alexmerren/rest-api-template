@@ -36,14 +36,14 @@ And visit
 
 This template implements a few basic CRUD operations, each of which has a specific endpoint.
 
-| Endpoint         | Operation                                                                      |
-| ---------------- | ------------------------------------------------------------------------------ |
-| /api/test/       | A test endpoint to check if the system is operational.                         |
-| /api/create/     | Create a new contact, with the parameters as the request body.                 |
-| /api/read/       | Read all contacts that are stored.                                             |
-| /api/read/{id}   | Read a contact whose ID is given as a parameter in the URL.                    |
-| /api/update/{id} | Update a contact whose ID is in the URL, and body containing fields to update. |
-| /api/delete/{id} | Delete a contact whose ID is in the URL.                                       |
+| Endpoint         | Method | Operation                                                                      |
+| ---------------- | ------ | ------------------------------------------------------------------------------ |
+| /api/test/       | GET    | A test endpoint to check if the system is operational.                         |
+| /api/create/     | POST   | Create a new contact, with the parameters as the request body.                 |
+| /api/read/       | GET    | Read all contacts that are stored.                                             |
+| /api/read/{id}   | GET    | Read a contact whose ID is given as a parameter in the URL.                    |
+| /api/update/{id} | POST   | Update a contact whose ID is in the URL, and body containing fields to update. |
+| /api/delete/{id} | POST   | Delete a contact whose ID is in the URL.                                       |
 
 ## Configuration
 
