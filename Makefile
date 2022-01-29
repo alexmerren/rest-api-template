@@ -9,6 +9,8 @@ INTERNAL_DIR := $(CURDIR)/internal
 BINNAME  := golang-api-template
 MAINPATH := cmd/$(BINNAME)/main.go
 
+TEST_MODULES := $(shell $(GO) list $(INTERNAL_DIR)/...)
+
 # -----------------------------------------------
 #  Commands
 # -----------------------------------------------
@@ -41,8 +43,12 @@ lint:
 ## test: Test the project
 .PHONY: test
 test:
-	@$(GO) test -coverinternal=$(INTERNAL_DIR)/... \
-		-coverprofile=coverage.out  \
-		$(INTERNAL_DIR)/... 
-	@$(GO) tool cover -func=coverage.out
-	@$(GO) tool cover -html=coverage.out -o coverage.html 
+	@$(GO) test $(TEST_MODULES) -coverprofile=$(BIN_DIR)/coverage.out coverpkg=$(INTERNAL_DIR)/...
+	@$(GO) tool cover -html=$(BIN_DIR)/coverage.out -o $(BIN_DIR)/test-coverage.html
+	@$(GO) tool cover -func=$(BIN_DIR)/coverage.out \
+		| awk '$$1 == "total:" {printf("Total coverage: %.2f%% of statements\n", $$3)}'
+
+## mocks: Generate mocks for the project
+.PHONY: mocks
+mocks:
+	@mockery --all --dir="$(INTERNAL_DIR)"

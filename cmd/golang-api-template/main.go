@@ -3,49 +3,63 @@ package main
 import (
 	"context"
 	"golang-api-template/internal/config"
+	"golang-api-template/internal/datastore"
 	"golang-api-template/internal/logger"
+	"golang-api-template/internal/router"
 	"golang-api-template/internal/server"
-	"golang-api-template/internal/store"
 )
 
 func main() {
-	err := initApp()
+	app, err := ProvideApplication()
 	if err != nil {
 		panic(err)
 	}
+	app.Start()
+	defer app.Stop()
 }
 
-func initApp() error {
-	config, err := config.ReadInConfig()
+type Application struct {
+	logger    *logger.ZapLogger
+	server    *server.Server
+	datastore *datastore.Datastore
+}
+
+func ProvideApplication() (*Application, error) {
+	filesystem := config.ProvideFilesystem()
+	koanf := config.ProvideKoanf()
+	config, err := config.ProvideConfig(koanf, filesystem)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	logger, err := logger.NewZapLogger(config)
+	logger, err := logger.ProvideLogger(config)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	context := context.Background()
-
-	store, err := store.NewStore(context, config)
+	datastore, err := datastore.ProvideDatastore(context, config)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	defer func() {
-		err = store.CloseDB()
-	}()
+	router := router.ProvideRouter(context, logger, datastore)
+	server, err := server.ProvideServer(context, config, logger, datastore, router)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	server, err := server.NewServer(context, config, logger, store)
-	if err != nil {
-		return err
-	}
+	return &Application{
+		logger:    logger,
+		server:    server,
+		datastore: datastore,
+	}, nil
+}
 
-	server.Run()
+func (a *Application) Start() {
+	a.server.Run()
+}
 
-	return nil
+func (a *Application) Stop() {
+	_ = a.datastore.CloseDB()
 }
