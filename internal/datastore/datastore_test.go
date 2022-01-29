@@ -10,6 +10,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+const (
+	validUsername = "test"
+	validPassword = "test"
+	validPort     = 8000
+	validName     = "test"
+	validHost     = "test"
+)
+
 func Test_ProvideDatastore_HappyPath(t *testing.T) {}
 
 func Test_ProvideDatastore_ConfigErrors(t *testing.T) {
@@ -57,36 +65,36 @@ func Test_ProvideDatastore_ConfigErrors(t *testing.T) {
 			if tc.userErr != nil {
 				mockConfig.On("GetString", "Database.Username").Return("", tc.userErr)
 			} else {
-				mockConfig.On("GetString", "Database.Username").Return("test", nil)
+				mockConfig.On("GetString", "Database.Username").Return(validUsername, nil)
 			}
 
 			if tc.passErr != nil {
 				mockConfig.On("GetString", "Database.Password").Return("", tc.passErr)
 			} else {
-				mockConfig.On("GetString", "Database.Password").Return("test", nil)
+				mockConfig.On("GetString", "Database.Password").Return(validPassword, nil)
 			}
 
 			if tc.portErr != nil {
 				mockConfig.On("GetInt", "Database.Port").Return(0, tc.portErr)
 			} else {
-				mockConfig.On("GetInt", "Database.Port").Return(8080, nil)
+				mockConfig.On("GetInt", "Database.Port").Return(validPort, nil)
 			}
 
 			if tc.nameErr != nil {
 				mockConfig.On("GetString", "Database.Name").Return("", tc.nameErr)
 			} else {
-				mockConfig.On("GetString", "Database.Name").Return("test", nil)
+				mockConfig.On("GetString", "Database.Name").Return(validName, nil)
 			}
 
 			if tc.hostErr != nil {
 				mockConfig.On("GetString", "Host").Return("", tc.hostErr)
 			} else {
-				mockConfig.On("GetString", "Host").Return("test", nil)
+				mockConfig.On("GetString", "Host").Return(validHost, nil)
 			}
 
 			store, storeErr := datastore.ProvideDatastore(context.Background(), mockConfig)
-			assert.Nil(t, store, "")
-			assert.EqualError(t, storeErr, "mock error", "")
+			assert.Nil(t, store)
+			assert.EqualError(t, storeErr, "mock error")
 		})
 	}
 }
