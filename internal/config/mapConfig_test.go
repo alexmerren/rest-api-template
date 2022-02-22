@@ -2,10 +2,10 @@ package config_test
 
 import (
 	"errors"
-	"golang-api-template/internal/config"
-	"golang-api-template/mocks"
 	"io/fs"
 	"os"
+	"rest-api-template/internal/config"
+	"rest-api-template/mocks"
 	"testing"
 	"testing/fstest"
 

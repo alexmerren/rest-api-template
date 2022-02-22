@@ -3,10 +3,10 @@ package server
 import (
 	"context"
 	"fmt"
-	"golang-api-template/internal/config"
-	"golang-api-template/internal/datastore"
-	"golang-api-template/internal/logger"
 	"net/http"
+	"rest-api-template/internal/config"
+	"rest-api-template/internal/datastore"
+	"rest-api-template/internal/logger"
 
 	"github.com/gorilla/mux"
 )

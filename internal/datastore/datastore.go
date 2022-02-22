@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"golang-api-template/internal/config"
+	"rest-api-template/internal/config"
 
 	_ "github.com/go-sql-driver/mysql"
 )
