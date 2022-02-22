@@ -2,9 +2,9 @@ package logger_test
 
 import (
 	"errors"
-	"golang-api-template/internal/config"
-	"golang-api-template/internal/logger"
-	"golang-api-template/mocks"
+	"rest-api-template/internal/config"
+	"rest-api-template/internal/logger"
+	"rest-api-template/mocks"
 	"testing"
 	"testing/fstest"
 

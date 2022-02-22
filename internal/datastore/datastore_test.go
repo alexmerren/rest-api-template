@@ -3,8 +3,8 @@ package datastore_test
 import (
 	"context"
 	"errors"
-	"golang-api-template/internal/datastore"
-	"golang-api-template/mocks"
+	"rest-api-template/internal/datastore"
+	"rest-api-template/mocks"
 	"testing"
 
 	"github.com/stretchr/testify/assert"

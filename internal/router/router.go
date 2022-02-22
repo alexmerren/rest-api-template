@@ -5,9 +5,9 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"golang-api-template/internal/datastore"
-	"golang-api-template/internal/logger"
 	"net/http"
+	"rest-api-template/internal/datastore"
+	"rest-api-template/internal/logger"
 
 	"github.com/gorilla/mux"
 )

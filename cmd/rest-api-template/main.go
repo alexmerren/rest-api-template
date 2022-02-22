@@ -2,11 +2,11 @@ package main
 
 import (
 	"context"
-	"golang-api-template/internal/config"
-	"golang-api-template/internal/datastore"
-	"golang-api-template/internal/logger"
-	"golang-api-template/internal/router"
-	"golang-api-template/internal/server"
+	"rest-api-template/internal/config"
+	"rest-api-template/internal/datastore"
+	"rest-api-template/internal/logger"
+	"rest-api-template/internal/router"
+	"rest-api-template/internal/server"
 )
 
 func main() {
