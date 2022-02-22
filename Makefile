@@ -6,7 +6,7 @@ GO := go
 BIN_DIR := $(CURDIR)/bin
 INTERNAL_DIR := $(CURDIR)/internal
 
-BINNAME  := golang-api-template
+BINNAME  := rest-api-template
 MAINPATH := cmd/$(BINNAME)/main.go
 
 TEST_MODULES := $(shell $(GO) list $(INTERNAL_DIR)/...)
