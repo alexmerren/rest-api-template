@@ -14,6 +14,7 @@ func (s *RESTServer) mapRoutes() error {
 	router.HandleFunc("/api/v1/update/{id}/", s.Update).Methods(http.MethodPut)
 	router.HandleFunc("/api/v1/delete/{id}/", s.Delete).Methods(http.MethodPost)
 	router.Use(s.loggingMiddleware)
+	router.Use(s.formatMiddleware)
 	s.httpServer.Handler = router
 	return nil
 }

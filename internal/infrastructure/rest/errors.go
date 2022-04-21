@@ -18,11 +18,12 @@ type ErrorResponse struct {
 	ErrorString string `json:"error_string"`
 }
 
+// nolint:errcheck // No point in trying to check for encoding errors here.
 func HandleError(w http.ResponseWriter, r *http.Request, err error) {
 	notFoundErrorType := &entities.NotFoundError{}
 	if errors.As(err, &notFoundErrorType) {
 		w.WriteHeader(http.StatusNotFound)
-		err = json.NewEncoder(w).Encode(&ErrorResponse{
+		json.NewEncoder(w).Encode(&ErrorResponse{
 			StatusCode:  http.StatusNotFound,
 			ErrorString: publicNotFoundErrorMessage,
 		})
@@ -32,7 +33,7 @@ func HandleError(w http.ResponseWriter, r *http.Request, err error) {
 	badRequestErrorType := &entities.BadRequestError{}
 	if errors.As(err, &badRequestErrorType) {
 		w.WriteHeader(http.StatusBadRequest)
-		err = json.NewEncoder(w).Encode(&ErrorResponse{
+		json.NewEncoder(w).Encode(&ErrorResponse{
 			StatusCode:  http.StatusBadRequest,
 			ErrorString: publicBadRequestErrorMessage,
 		})
@@ -40,9 +41,8 @@ func HandleError(w http.ResponseWriter, r *http.Request, err error) {
 	}
 
 	w.WriteHeader(http.StatusInternalServerError)
-	err = json.NewEncoder(w).Encode(&ErrorResponse{
+	json.NewEncoder(w).Encode(&ErrorResponse{
 		StatusCode:  http.StatusInternalServerError,
 		ErrorString: publicInternalErrorMessage,
 	})
-	return
 }

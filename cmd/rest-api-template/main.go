@@ -34,10 +34,11 @@ func main() {
 	signal.Notify(cancelChan, os.Interrupt)
 
 	go func() {
-		err := server.Start()
+		err = server.Start()
 		if err != nil {
 			log.Fatal(err)
 		}
+
 	}()
 
 	<-cancelChan
