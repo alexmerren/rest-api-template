@@ -35,6 +35,10 @@ vendor:
 	@$(GO) mod tidy
 	@$(GO) mod vendor
 
+.PHONY: install-tools
+install-tools:
+	@go install github.com/vektra/mockery/v2@latest
+
 ## lint: Lint the project 
 .PHONY: lint
 lint:
@@ -51,4 +55,4 @@ test:
 ## mocks: Generate mocks for the project
 .PHONY: mocks
 mocks:
-	@echo "Not implemented :("
+	@mockery --all --dir=$(INTERNAL_DIR)
