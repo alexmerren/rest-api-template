@@ -4,6 +4,9 @@ github.com/davecgh/go-spew/spew
 # github.com/go-ozzo/ozzo-validation/v4 v4.3.0
 ## explicit; go 1.13
 github.com/go-ozzo/ozzo-validation/v4
+# github.com/gorilla/mux v1.8.0
+## explicit; go 1.12
+github.com/gorilla/mux
 # github.com/knadh/koanf v1.4.1
 ## explicit; go 1.12
 github.com/knadh/koanf

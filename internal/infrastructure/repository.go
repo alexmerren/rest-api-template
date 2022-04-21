@@ -1,6 +1,8 @@
 package infrastructure
 
+import "context"
+
 type Server interface {
 	Start() error
-	Stop()
+	Stop(ctx context.Context)
 }
