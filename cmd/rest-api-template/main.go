@@ -43,6 +43,7 @@ func main() {
 
 	<-cancelChan
 
+	// TODO Make this work
 	if err := server.Stop(ctx); err != nil {
 		log.Fatal(err)
 	}
