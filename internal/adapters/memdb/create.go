@@ -5,6 +5,7 @@ import (
 	"rest-api-template/internal/domain/entities"
 )
 
-func (m *memoryContactRepository) Create(ctx context.Context, contact entities.Contact) error {
+func (m *memoryStoreAdapter) Create(ctx context.Context, contact entities.Contact) error {
+	m.contacts = append(m.contacts, contact)
 	return nil
 }

@@ -5,12 +5,12 @@ import (
 	"rest-api-template/internal/domain/repositories"
 )
 
-type memoryContactRepository struct {
+type memoryStoreAdapter struct {
 	contacts []entities.Contact
 }
 
-func NewMemoryAdapter() repositories.ContactRepository {
-	return &memoryContactRepository{
+func NewMemoryStoreAdapter() repositories.ContactStoreRepository {
+	return &memoryStoreAdapter{
 		contacts: make([]entities.Contact, 0),
 	}
 }

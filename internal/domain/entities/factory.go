@@ -4,8 +4,6 @@ import "math/rand"
 
 const idLength = 10
 
-type EntityFactory struct{}
-
 func MakeContact(
 	name string,
 	age int,

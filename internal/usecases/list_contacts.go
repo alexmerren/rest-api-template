@@ -6,5 +6,5 @@ import (
 )
 
 func (u *realContactUseCases) ListContacts(ctx context.Context) ([]entities.Contact, error) {
-	return []entities.Contact{}, nil
+	return u.store.ReadMany(ctx)
 }

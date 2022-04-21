@@ -3,11 +3,16 @@ package usecases
 import "rest-api-template/internal/domain/repositories"
 
 type realContactUseCases struct {
-	contactRepo repositories.ContactRepository
+	store  repositories.ContactStoreRepository
+	logger repositories.Logger
 }
 
-func NewRealContactUseCases(contactRepository repositories.ContactRepository) repositories.ContactUseCases {
+func NewRealContactUseCases(
+	contactRepo repositories.ContactStoreRepository,
+	loggerRepo repositories.Logger,
+) repositories.ContactUseCases {
 	return &realContactUseCases{
-		contactRepo: contactRepository,
+		store:  contactRepo,
+		logger: loggerRepo,
 	}
 }

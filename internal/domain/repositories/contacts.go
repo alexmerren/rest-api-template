@@ -5,7 +5,7 @@ import (
 	"rest-api-template/internal/domain/entities"
 )
 
-type ContactRepository interface {
+type ContactStoreRepository interface {
 	Create(ctx context.Context, contact entities.Contact) error
 	Delete(ctx context.Context, ID string) error
 	Update(ctx context.Context, ID string, contact entities.Contact) (entities.Contact, error)
