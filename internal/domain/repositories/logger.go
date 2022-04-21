@@ -1,4 +1,4 @@
-package repository
+package repositories
 
 type Logger interface {
 	Info(msg interface{})
