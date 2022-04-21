@@ -1,7 +1,6 @@
-# Golang REST API Example 
- 
- This is an example REST API framework written in Golang, using Mux for
- routing, Zap for logging, and Koanf for config. 
+# REST API Tempalate 
+
+This is a REST API template, using Clean Architecture, and written in Golang. 
 
 ## Contents
 
@@ -15,7 +14,6 @@
 
 This progrom does require a couple of things:
 
- * [mySQL](https://dev.mysql.com/downloads/)
  * [Golang 1.16](https://go.dev/dl/)
 
 ## Installation 
@@ -30,7 +28,7 @@ Build and run the app
 
 And visit
 
-`http://localhost:8080/api/test`
+`http://localhost:8080/api/health`
 
 ## Endpoints and Operations
 
@@ -38,25 +36,19 @@ This template implements a few basic CRUD operations, each of which has a specif
 
 | Endpoint         | Method | Operation                                                                      |
 | ---------------- | ------ | ------------------------------------------------------------------------------ |
-| /api/test/       | GET    | A test endpoint to check if the system is operational.                         |
+| /api/health/     | GET    | A health check to ensure that the service has started correctly                |
 | /api/create/     | POST   | Create a new contact, with the parameters as the request body.                 |
 | /api/read/       | GET    | Read all contacts that are stored.                                             |
 | /api/read/{id}   | GET    | Read a contact whose ID is given as a parameter in the URL.                    |
-| /api/update/{id} | POST   | Update a contact whose ID is in the URL, and body containing fields to update. |
+| /api/update/{id} | PUT    | Update a contact whose ID is in the URL, and body containing fields to update. |
 | /api/delete/{id} | POST   | Delete a contact whose ID is in the URL.                                       |
 
 ## Configuration
 
 | Settings          | Description                   | Default                |
 | ----------------- | ----------------------------- | ---------------------- |
-| host              | The host address to listen on | "localhost"            |
 | port              | The port number to listen on  | 8080                   |
-| logger.level      | The default loggin level      | "debug"                |
-| logger.encoding   | Logging format                | "console"              |
-| database.username | The database username         | "h9zK7nneEB"           |
-| database.password | The database user's password  | "e4gJhwu2Nk5KS5Kqa5Ue" |
-| database.name     | The database name             | "contacts"             |
-| database.port     | The database port             | 3306                   |
+| logger.loglevel   | The default loggin level      | "debug"                |
 
 ## Make Commands
 

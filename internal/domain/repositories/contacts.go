@@ -23,6 +23,7 @@ type ContactUseCases interface {
 }
 
 type ContactInfrastructure interface {
+	Health(w http.ResponseWriter, r *http.Request)
 	Create(w http.ResponseWriter, r *http.Request)
 	ReadOne(w http.ResponseWriter, r *http.Request)
 	ReadMany(w http.ResponseWriter, r *http.Request)

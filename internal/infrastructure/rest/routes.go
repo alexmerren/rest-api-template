@@ -8,6 +8,7 @@ import (
 
 func (s *RESTServer) mapRoutes() error {
 	router := mux.NewRouter()
+	router.HandleFunc("/api/v1/health/", s.Health).Methods(http.MethodGet)
 	router.HandleFunc("/api/v1/create/", s.Create).Methods(http.MethodPost)
 	router.HandleFunc("/api/v1/read/", s.ReadMany).Methods(http.MethodGet)
 	router.HandleFunc("/api/v1/read/{id}/", s.ReadOne).Methods(http.MethodGet)

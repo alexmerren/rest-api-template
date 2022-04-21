@@ -95,3 +95,7 @@ func (s *RESTServer) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func (s *RESTServer) Health(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte(`{"message":"healthy!"}`))
+}
