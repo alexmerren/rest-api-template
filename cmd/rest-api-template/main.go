@@ -38,9 +38,11 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		defer server.Stop(ctx)
 	}()
 
 	<-cancelChan
-	logger.Debug("Program exiting...")
+
+	if err := server.Stop(ctx); err != nil {
+		log.Fatal(err)
+	}
 }

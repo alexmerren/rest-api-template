@@ -2,7 +2,7 @@ package entities
 
 import "math/rand"
 
-const idLength = 10
+const idLength = 20
 
 func MakeContact(
 	name string,

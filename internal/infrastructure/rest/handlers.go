@@ -37,6 +37,7 @@ func (s *RESTServer) ReadOne(w http.ResponseWriter, r *http.Request) {
 	}
 	err = json.NewEncoder(w).Encode(contact)
 	if err != nil {
+		s.logger.Info(err)
 		HandleError(w, r, err)
 		return
 	}
@@ -55,15 +56,42 @@ func (s *RESTServer) ReadMany(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+type UpdateRequestBody struct {
+	Contact *entities.Contact `json:"contact"`
+}
+
 func (s *RESTServer) Update(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
+	var requestBody UpdateRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
+		HandleError(w, r, err)
+		return
+	}
+
+	vars := mux.Vars(r)
+	requestID := vars["id"]
+	contact, err := s.usecases.UpdateContactByID(context.Background(), requestID, requestBody.Contact)
+	if err != nil {
+		HandleError(w, r, err)
+		return
+	}
+	err = json.NewEncoder(w).Encode(contact)
+	if err != nil {
+		HandleError(w, r, err)
+		return
+	}
 }
 
 func (s *RESTServer) Delete(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-}
-
-func HandleError(w http.ResponseWriter, r *http.Request, err error) {
-	w.WriteHeader(http.StatusTeapot)
-	w.Write([]byte(err.Error()))
+	vars := mux.Vars(r)
+	requestID := vars["id"]
+	contact, err := s.usecases.DeleteContactByID(context.Background(), requestID)
+	if err != nil {
+		HandleError(w, r, err)
+		return
+	}
+	err = json.NewEncoder(w).Encode(contact)
+	if err != nil {
+		HandleError(w, r, err)
+		return
+	}
 }
