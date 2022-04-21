@@ -10,8 +10,8 @@ func MakeContact(
 	birthday string,
 	address string,
 	gender string,
-) (Contact, error) {
-	return Contact{
+) (*Contact, error) {
+	return &Contact{
 		ID:       generateNewID(),
 		Name:     name,
 		Age:      age,
