@@ -23,8 +23,9 @@ type ContactUseCases interface {
 }
 
 type ContactInfrastructure interface {
-	HandleCreate(w http.ResponseWriter, r *http.Request)
-	HandleRead(w http.ResponseWriter, r *http.Request)
-	HandleUpdate(w http.ResponseWriter, r *http.Request)
-	HandleDelete(w http.ResponseWriter, r *http.Request)
+	Create(w http.ResponseWriter, r *http.Request)
+	ReadOne(w http.ResponseWriter, r *http.Request)
+	ReadMany(w http.ResponseWriter, r *http.Request)
+	Update(w http.ResponseWriter, r *http.Request)
+	Delete(w http.ResponseWriter, r *http.Request)
 }

@@ -8,10 +8,11 @@ import (
 
 func (s *RESTServer) mapRoutes() error {
 	router := mux.NewRouter()
-	router.HandleFunc("/api/v1/create/", s.HandleCreate).Methods(http.MethodPost)
-	router.HandleFunc("/api/v1/read/", s.HandleRead).Methods(http.MethodGet)
-	router.HandleFunc("/api/v1/update/", s.HandleUpdate).Methods(http.MethodPut)
-	router.HandleFunc("/api/v1/delete/", s.HandleDelete).Methods(http.MethodPost)
+	router.HandleFunc("/api/v1/create/", s.Create).Methods(http.MethodPost)
+	router.HandleFunc("/api/v1/read/", s.ReadMany).Methods(http.MethodGet)
+	router.HandleFunc("/api/v1/read/{id}/", s.ReadOne).Methods(http.MethodGet)
+	router.HandleFunc("/api/v1/update/{id}/", s.Update).Methods(http.MethodPut)
+	router.HandleFunc("/api/v1/delete/{id}/", s.Delete).Methods(http.MethodPost)
 	router.Use(s.loggingMiddleware)
 	s.httpServer.Handler = router
 	return nil

@@ -6,6 +6,11 @@ import (
 )
 
 func (m *memoryStoreAdapter) Create(ctx context.Context, contact *entities.Contact) error {
-	m.contacts = append(m.contacts, contact)
+	contact, err := entities.MakeContact(contact.Name, contact.Age, contact.Birthday, contact.Address, contact.Gender)
+	if err != nil {
+		return entities.NewInternalError("could not generate ID for Contact", err)
+	}
+
+	m.Contacts = append(m.Contacts, contact)
 	return nil
 }

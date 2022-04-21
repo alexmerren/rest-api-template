@@ -7,7 +7,7 @@ import (
 
 func (m *memoryStoreAdapter) Update(ctx context.Context, ID string, newContact *entities.Contact) (*entities.Contact, error) {
 	// TODO this is a trash implementation, fix me!!
-	for _, contact := range m.contacts {
+	for _, contact := range m.Contacts {
 		if contact.ID == ID {
 			if contact.Age != newContact.Age && newContact.Age != 0 {
 				contact.Age = newContact.Age

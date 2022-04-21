@@ -41,9 +41,11 @@ func (s *RESTServer) Start() error {
 	return nil
 }
 
-func (s *RESTServer) Stop(ctx context.Context) {
+func (s *RESTServer) Stop(ctx context.Context) error {
 	s.logger.Info("Stopping HTTP server")
 	if err := s.httpServer.Shutdown(ctx); err != nil {
 		s.logger.Info("server shutdown failed")
+		return err
 	}
+	return nil
 }

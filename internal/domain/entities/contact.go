@@ -3,12 +3,12 @@ package entities
 import validation "github.com/go-ozzo/ozzo-validation/v4"
 
 type Contact struct {
-	Age      int
+	Age      int `json:"age"`
 	ID       string
-	Name     string
-	Birthday string
-	Address  string
-	Gender   string
+	Name     string `json:"name"`
+	Birthday string `json:"birthday"`
+	Address  string `json:"address"`
+	Gender   string `json:"gender"`
 }
 
 func (c Contact) Validate() error {

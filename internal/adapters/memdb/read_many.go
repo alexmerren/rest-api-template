@@ -6,5 +6,5 @@ import (
 )
 
 func (m *memoryStoreAdapter) ReadMany(ctx context.Context) ([]*entities.Contact, error) {
-	return m.contacts, nil
+	return m.Contacts, nil
 }

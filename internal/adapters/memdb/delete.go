@@ -6,10 +6,10 @@ import (
 )
 
 func (m *memoryStoreAdapter) Delete(ctx context.Context, ID string) error {
-	for index, contact := range m.contacts {
+	for index, contact := range m.Contacts {
 		if contact.ID == ID {
-			m.contacts[index], m.contacts[len(m.contacts)-1] = m.contacts[len(m.contacts)-1], m.contacts[index]
-			m.contacts = m.contacts[:len(m.contacts)-1]
+			m.Contacts[index], m.Contacts[len(m.Contacts)-1] = m.Contacts[len(m.Contacts)-1], m.Contacts[index]
+			m.Contacts = m.Contacts[:len(m.Contacts)-1]
 			return nil
 		}
 	}

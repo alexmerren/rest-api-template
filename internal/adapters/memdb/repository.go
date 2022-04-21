@@ -6,11 +6,11 @@ import (
 )
 
 type memoryStoreAdapter struct {
-	contacts []*entities.Contact
+	Contacts []*entities.Contact
 }
 
 func NewMemoryStoreAdapter() repositories.ContactStoreRepository {
 	return &memoryStoreAdapter{
-		contacts: make([]*entities.Contact, 0),
+		Contacts: make([]*entities.Contact, 0),
 	}
 }
