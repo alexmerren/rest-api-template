@@ -48,12 +48,15 @@ func (c *Configuration) GetString(name string) (string, error) {
 }
 
 func (c *Configuration) GetInt(name string) (int, error) {
-	str, ok := c.m[strings.ToLower(name)].(string)
-	value, err := strconv.Atoi(str)
-	if !ok || err != nil {
+	rawValue := c.m[strings.ToLower(name)]
+	switch rawValue.(type) {
+	case int:
+		return rawValue.(int), nil
+	case string:
+		return strconv.Atoi(rawValue.(string))
+	default:
 		return 0, entities.NewNotFoundError("there was an error", nil)
 	}
-	return value, nil
 }
 
 func NewFilesystem() fs.FS {

@@ -6,7 +6,7 @@ import (
 )
 
 func (u *realContactUseCases) ListContacts(ctx context.Context) ([]*entities.Contact, error) {
-	contacts, err := u.store.ReadMany(ctx)
+	contacts, err := u.store.ReadContacts(ctx)
 	if err != nil {
 		u.logger.Error(err)
 		return nil, entities.NewInternalError("could not find contacts", err)

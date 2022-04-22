@@ -6,13 +6,13 @@ import (
 )
 
 func (u *realContactUseCases) DeleteContactByID(ctx context.Context, ID string) (*entities.Contact, error) {
-	contact, err := u.store.ReadOne(ctx, ID)
+	contact, err := u.store.ReadContactWithID(ctx, ID)
 	if err != nil {
 		u.logger.Error(err)
 		return nil, entities.NewNotFoundError("could not find Contact with ID", err)
 	}
 
-	err = u.store.Delete(ctx, ID)
+	err = u.store.DeleteContactWithID(ctx, ID)
 	if err != nil {
 		u.logger.Error(err)
 		return nil, entities.NewInternalError("could not delete Contact with ID", err)

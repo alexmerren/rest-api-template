@@ -5,7 +5,7 @@ import (
 	"rest-api-template/internal/domain/entities"
 )
 
-func (m *memoryStoreAdapter) ReadOne(ctx context.Context, ID string) (*entities.Contact, error) {
+func (m *memoryStoreAdapter) ReadContactWithID(ctx context.Context, ID string) (*entities.Contact, error) {
 	for _, contact := range m.Contacts {
 		if contact.ID == ID {
 			return contact, nil
