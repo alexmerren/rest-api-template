@@ -1,7 +1,6 @@
-# Golang REST API Example 
- 
- This is an example REST API framework written in Golang, using Mux for
- routing, Zap for logging, and Koanf for config. 
+# REST API Tempalate 
+
+This is a REST API template, using Clean Architecture, and written in Golang. 
 
 ## Contents
 
@@ -15,14 +14,13 @@
 
 This progrom does require a couple of things:
 
- * [mySQL](https://dev.mysql.com/downloads/)
- * [Golang 1.16](https://go.dev/dl/)
+ * [Golang 1.16+](https://go.dev/dl/)
 
 ## Installation 
 
 Clone the source 
 
-`git clone https://github.com/alexmerren/golang-api-template.git`
+`git clone https://github.com/alexmerren/rest-api-template.git`
 
 Build and run the app
 
@@ -30,42 +28,38 @@ Build and run the app
 
 And visit
 
-`http://localhost:8080/api/test`
+`http://localhost:8080/api/v1/health`
 
 ## Endpoints and Operations
 
 This template implements a few basic CRUD operations, each of which has a specific endpoint.
 
-| Endpoint         | Method | Operation                                                                      |
-| ---------------- | ------ | ------------------------------------------------------------------------------ |
-| /api/test/       | GET    | A test endpoint to check if the system is operational.                         |
-| /api/create/     | POST   | Create a new contact, with the parameters as the request body.                 |
-| /api/read/       | GET    | Read all contacts that are stored.                                             |
-| /api/read/{id}   | GET    | Read a contact whose ID is given as a parameter in the URL.                    |
-| /api/update/{id} | POST   | Update a contact whose ID is in the URL, and body containing fields to update. |
-| /api/delete/{id} | POST   | Delete a contact whose ID is in the URL.                                       |
+| Endpoint                    | Method | Operation                                                                      |
+| --------------------------- | ------ | ------------------------------------------------------------------------------ |
+| /api/v1/health/             | GET    | A health check to ensure that the service has started correctly                |
+| /api/v1/contact/create/     | POST   | Create a new contact, with the parameters as the request body.                 |
+| /api/v1/contact/read/       | GET    | Read all contacts that are stored.                                             |
+| /api/v1/contact/read/{id}   | GET    | Read a contact whose ID is given as a parameter in the URL.                    |
+| /api/v1/contact/update/{id} | PUT    | Update a contact whose ID is in the URL, and body containing fields to update. |
+| /api/v1/contact/delete/{id} | POST   | Delete a contact whose ID is in the URL.                                       |
 
 ## Configuration
 
-| Settings          | Description                   | Default                |
-| ----------------- | ----------------------------- | ---------------------- |
-| host              | The host address to listen on | "localhost"            |
-| port              | The port number to listen on  | 8080                   |
-| logger.level      | The default loggin level      | "debug"                |
-| logger.encoding   | Logging format                | "console"              |
-| database.username | The database username         | "h9zK7nneEB"           |
-| database.password | The database user's password  | "e4gJhwu2Nk5KS5Kqa5Ue" |
-| database.name     | The database name             | "contacts"             |
-| database.port     | The database port             | 3306                   |
+| Settings          | Environment Variable   | Description                   | Default                |
+| ----------------- | ---------------------- | ----------------------------- | ---------------------- |
+| server.port       | REST\_SERVER\_PORT     | The port number to listen on  | 8080                   |
+| logger.loglevel   | REST\_LOGGER\_LOGLEVEL | The default loggin level      | "debug"                |
 
 ## Make Commands
 
 ```
-help     Print this message
-build    Create the binary
-run      Run the binary
-vendor   Download the vendored dependencies
-lint     Lint the project
-test     Test the project
-mocks    Generate mocks for the project
+help           Print this message
+build          Create the binary
+run            Run the binary
+vendor         Download the vendored dependencies
+lint           Lint the project
+test           Run the unit tests for the project
+mocks          Generate mocks for the project
+docker-build   Build the docker container
+docker-run     Run the docker container with some environment variables
 ```

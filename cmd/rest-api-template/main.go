@@ -2,64 +2,49 @@ package main
 
 import (
 	"context"
-	"rest-api-template/internal/config"
-	"rest-api-template/internal/datastore"
-	"rest-api-template/internal/logger"
-	"rest-api-template/internal/router"
-	"rest-api-template/internal/server"
+	"log"
+	"os"
+	"os/signal"
+	"rest-api-template/internal/adapters/config"
+	"rest-api-template/internal/adapters/logger"
+	"rest-api-template/internal/adapters/memdb"
+	"rest-api-template/internal/infrastructure/rest"
+	"rest-api-template/internal/usecases"
 )
 
 func main() {
-	app, err := ProvideApplication()
+	ctx := context.Background()
+
+	filesystem := config.NewFilesystem()
+	config := config.NewConfiguration("config.yaml", filesystem)
+
+	logLevel, _ := config.GetString("logger.loglevel")
+	logger, err := logger.NewZapLogger(logLevel)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
-	app.Start()
-	defer app.Stop()
-}
+	defer logger.Cleanup()
 
-type Application struct {
-	logger    *logger.ZapLogger
-	server    *server.Server
-	datastore *datastore.Datastore
-}
+	memDB := memdb.NewMemoryStoreAdapter()
+	usecases := usecases.NewRealContactUseCases(memDB, logger)
+	port, _ := config.GetInt("server.port")
+	server := rest.NewRESTServer(usecases, logger, port)
 
-func ProvideApplication() (*Application, error) {
-	filesystem := config.ProvideFilesystem()
-	koanf := config.ProvideKoanf()
-	config, err := config.ProvideConfig(koanf, filesystem)
-	if err != nil {
-		return nil, err
+	cancelChan := make(chan os.Signal, 1)
+	signal.Notify(cancelChan, os.Interrupt)
+
+	go func() {
+		err = server.Start()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+	}()
+
+	<-cancelChan
+
+	// TODO Make this work
+	if err := server.Stop(ctx); err != nil {
+		log.Fatal(err)
 	}
-
-	logger, err := logger.ProvideLogger(config)
-	if err != nil {
-		return nil, err
-	}
-
-	context := context.Background()
-	datastore, err := datastore.ProvideDatastore(context, config)
-	if err != nil {
-		return nil, err
-	}
-
-	router := router.ProvideRouter(context, logger, datastore)
-	server, err := server.ProvideServer(context, config, logger, datastore, router)
-	if err != nil {
-		return nil, err
-	}
-
-	return &Application{
-		logger:    logger,
-		server:    server,
-		datastore: datastore,
-	}, nil
-}
-
-func (a *Application) Start() {
-	a.server.Run()
-}
-
-func (a *Application) Stop() {
-	_ = a.datastore.CloseDB()
 }
