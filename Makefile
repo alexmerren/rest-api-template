@@ -2,6 +2,7 @@
 #  Definitions
 # -----------------------------------------------
 GO := go
+DOCKER := docker
 
 BIN_DIR := $(CURDIR)/bin
 INTERNAL_DIR := $(CURDIR)/internal
@@ -10,6 +11,8 @@ BINNAME  := rest-api-template
 MAINPATH := cmd/$(BINNAME)/main.go
 
 TEST_MODULES := $(shell $(GO) list $(INTERNAL_DIR)/...)
+
+DOCKER_IMAGE_NAME := rest-api-template
 
 # -----------------------------------------------
 #  Commands
@@ -38,6 +41,7 @@ vendor:
 .PHONY: install-tools
 install-tools:
 	@go install github.com/vektra/mockery/v2@latest
+	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.45.2
 
 ## lint: Lint the project 
 .PHONY: lint
@@ -56,3 +60,20 @@ test:
 .PHONY: mocks
 mocks:
 	@mockery --all --dir=$(INTERNAL_DIR)
+
+## docker-build: Build the docker container
+.PHONY: docker-build
+docker-build:
+	$(DOCKER) build \
+		-t $(DOCKER_IMAGE_NAME) \
+		.
+
+.PHONY: docker-run
+docker-run:
+	$(DOCKER) run \
+		--rm \
+		-e REST_LOGGER_LOGLEVEL=debug \
+		-e REST_SERVER_PORT=8080 \
+		-w /usr/local/bin \
+		-p 8080:8080 \
+		$(DOCKER_IMAGE_NAME):latest

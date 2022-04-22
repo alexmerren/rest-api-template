@@ -4,6 +4,7 @@ import (
 	"io/fs"
 	"os"
 	"rest-api-template/internal/domain/entities"
+	"strconv"
 	"strings"
 
 	"github.com/knadh/koanf"
@@ -26,8 +27,8 @@ func NewConfiguration(filename string, filesystem fs.FS) *Configuration {
 	}
 
 	// Load in the environment variables that correspond to what we want in the config struct
-	err := k.Load(env.Provider("" /* Prefix */, "." /* Delimeter */, func(s string) string {
-		return strings.Replace(strings.ToLower(s), "_", ".", -1)
+	err := k.Load(env.Provider("REST_" /* Prefix */, "." /* Delimeter */, func(s string) string {
+		return strings.Replace(strings.ToLower(strings.TrimPrefix(s, "REST_")), "_", ".", -1)
 	}), nil /* Parser */)
 	if err != nil {
 		return nil
@@ -47,8 +48,9 @@ func (c *Configuration) GetString(name string) (string, error) {
 }
 
 func (c *Configuration) GetInt(name string) (int, error) {
-	value, ok := c.m[strings.ToLower(name)].(int)
-	if !ok {
+	str, ok := c.m[strings.ToLower(name)].(string)
+	value, err := strconv.Atoi(str)
+	if !ok || err != nil {
 		return 0, entities.NewNotFoundError("there was an error", nil)
 	}
 	return value, nil

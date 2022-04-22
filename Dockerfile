@@ -1,13 +1,17 @@
-FROM golang:1.18
+FROM golang:1.18 
 
-RUN mkdir /usr/bin/rest-api-template
+# Create and change the building directory to /build/
+WORKDIR /build
 
-ADD go.mod go.sum Makefile /usr/bin/rest-api-template
-ADD internal/ /usr/bin/rest-api-template
-ADD vendor/ /usr/bin/rest-api-template
-ADD cmd/ /usr/bin/rest-api-template
+# Add necessary components to build executable
+ADD go.mod go.sum Makefile ./ 
+ADD ./internal ./internal
+ADD ./vendor ./vendor
+ADD ./cmd ./cmd
 
-WORKDIR /usr/bin/rest-api-template
+# Run the Makefile to create the executable in /build/bin/rest-api-template
+RUN make build
 
-CMD ["make", "build"]
-CMD ["make", "run"]
+# Copy and run the executable in /usr/local/bin/rest-api-template 
+RUN cp /build/bin/rest-api-template /usr/local/bin/rest-api-template
+CMD ["/usr/local/bin/rest-api-template"]

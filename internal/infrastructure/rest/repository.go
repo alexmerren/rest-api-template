@@ -29,7 +29,7 @@ func NewRESTServer(
 }
 
 func (s *RESTServer) Start() error {
-	s.logger.Info(fmt.Sprintf("Starting HTTP server : %s", s.httpServer.Addr))
+	s.logger.Info(fmt.Sprintf("Starting HTTP server %s", s.httpServer.Addr))
 	if err := s.mapRoutes(); err != nil {
 		s.logger.Error(err)
 		return entities.NewInternalError("could not map routes", err)
