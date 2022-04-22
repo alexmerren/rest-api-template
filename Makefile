@@ -68,6 +68,7 @@ docker-build:
 		-t $(DOCKER_IMAGE_NAME) \
 		.
 
+## docker-run: Run the docker container with some environment variables
 .PHONY: docker-run
 docker-run:
 	$(DOCKER) run \
