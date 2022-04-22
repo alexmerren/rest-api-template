@@ -9,7 +9,7 @@ func (u *realContactUseCases) GetContactByID(ctx context.Context, ID string) (*e
 	contact, err := u.store.ReadOne(ctx, ID)
 	if err != nil {
 		u.logger.Error(err)
-		return nil, entities.NewNotFoundError("could not find Contact with ID", err)
+		return nil, err
 	}
 
 	return contact, nil
