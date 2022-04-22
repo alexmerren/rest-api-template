@@ -45,20 +45,10 @@ This template implements a few basic CRUD operations, each of which has a specif
 
 ## Configuration
 
-| Settings          | Description                   | Default                |
-| ----------------- | ----------------------------- | ---------------------- |
-| server.port       | The port number to listen on  | 8080                   |
-| logger.loglevel   | The default loggin level      | "debug"                |
-
-Any of these settings can be overriden on runtime, using environment variables, converted as such:
- * Prepend `REST_`.
- * Capitalise and change periods for spaces.
-
-For example:
-
-```
-server.port = REST_SERVER_PORT
-```
+| Settings          | Environment Variable   | Description                   | Default                |
+| ----------------- | ---------------------- | ----------------------------- | ---------------------- |
+| server.port       | REST\_SERVER\_PORT     | The port number to listen on  | 8080                   |
+| logger.loglevel   | REST\_LOGGER\_LOGLEVEL | The default loggin level      | "debug"                |
 
 ## Make Commands
 
