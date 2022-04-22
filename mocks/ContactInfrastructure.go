@@ -25,6 +25,11 @@ func (_m *ContactInfrastructure) Delete(w http.ResponseWriter, r *http.Request) 
 	_m.Called(w, r)
 }
 
+// Health provides a mock function with given fields: w, r
+func (_m *ContactInfrastructure) Health(w http.ResponseWriter, r *http.Request) {
+	_m.Called(w, r)
+}
+
 // ReadMany provides a mock function with given fields: w, r
 func (_m *ContactInfrastructure) ReadMany(w http.ResponseWriter, r *http.Request) {
 	_m.Called(w, r)

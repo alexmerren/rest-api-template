@@ -16,7 +16,7 @@ type CreateRequestBody struct {
 func (s *RESTServer) Create(w http.ResponseWriter, r *http.Request) {
 	var requestBody CreateRequestBody
 	if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
-		HandleError(w, r, err)
+		HandleError(w, r, entities.NewBadRequestError("could not decode JSON from Body", err))
 		return
 	}
 
@@ -38,7 +38,7 @@ func (s *RESTServer) ReadOne(w http.ResponseWriter, r *http.Request) {
 	err = json.NewEncoder(w).Encode(contact)
 	if err != nil {
 		s.logger.Info(err)
-		HandleError(w, r, err)
+		HandleError(w, r, entities.NewInternalError("could not encode to JSON", err))
 		return
 	}
 }
@@ -51,7 +51,7 @@ func (s *RESTServer) ReadMany(w http.ResponseWriter, r *http.Request) {
 	}
 	err = json.NewEncoder(w).Encode(contacts)
 	if err != nil {
-		HandleError(w, r, err)
+		HandleError(w, r, entities.NewInternalError("could not encode to JSON", err))
 		return
 	}
 }
@@ -63,7 +63,7 @@ type UpdateRequestBody struct {
 func (s *RESTServer) Update(w http.ResponseWriter, r *http.Request) {
 	var requestBody UpdateRequestBody
 	if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
-		HandleError(w, r, err)
+		HandleError(w, r, entities.NewBadRequestError("could not decode JSON from Body", err))
 		return
 	}
 
@@ -76,7 +76,7 @@ func (s *RESTServer) Update(w http.ResponseWriter, r *http.Request) {
 	}
 	err = json.NewEncoder(w).Encode(contact)
 	if err != nil {
-		HandleError(w, r, err)
+		HandleError(w, r, entities.NewInternalError("could not encode to JSON", err))
 		return
 	}
 }
@@ -91,7 +91,7 @@ func (s *RESTServer) Delete(w http.ResponseWriter, r *http.Request) {
 	}
 	err = json.NewEncoder(w).Encode(contact)
 	if err != nil {
-		HandleError(w, r, err)
+		HandleError(w, r, entities.NewInternalError("could not encode to JSON", err))
 		return
 	}
 }
