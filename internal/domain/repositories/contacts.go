@@ -7,11 +7,11 @@ import (
 )
 
 type ContactStoreRepository interface {
-	Create(ctx context.Context, contact *entities.Contact) error
-	ReadOne(ctx context.Context, ID string) (*entities.Contact, error)
-	ReadMany(ctx context.Context) ([]*entities.Contact, error)
-	Update(ctx context.Context, ID string, contact *entities.Contact) (*entities.Contact, error)
-	Delete(ctx context.Context, ID string) error
+	CreateContact(ctx context.Context, contact *entities.Contact) error
+	ReadContactWithID(ctx context.Context, ID string) (*entities.Contact, error)
+	ReadContacts(ctx context.Context) ([]*entities.Contact, error)
+	UpdateContactWithID(ctx context.Context, ID string, contact *entities.Contact) (*entities.Contact, error)
+	DeleteContactWithID(ctx context.Context, ID string) error
 }
 
 type ContactUseCases interface {

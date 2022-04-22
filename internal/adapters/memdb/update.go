@@ -5,7 +5,7 @@ import (
 	"rest-api-template/internal/domain/entities"
 )
 
-func (m *memoryStoreAdapter) Update(ctx context.Context, ID string, newContact *entities.Contact) (*entities.Contact, error) {
+func (m *memoryStoreAdapter) UpdateContactWithID(ctx context.Context, ID string, newContact *entities.Contact) (*entities.Contact, error) {
 	// TODO this is a trash implementation, fix me!!
 	for _, contact := range m.Contacts {
 		if contact.ID == ID {
