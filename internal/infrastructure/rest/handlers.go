@@ -58,7 +58,7 @@ func (s *RESTServer) ReadMany(w http.ResponseWriter, r *http.Request) {
 
 func (s *RESTServer) Update(w http.ResponseWriter, r *http.Request) {
 	var newContact *entities.Contact
-	if err := json.NewDecoder(r.Body).Decode(newContact); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&newContact); err != nil {
 		HandleError(w, r, entities.NewBadRequestError("could not decode JSON from Body", err))
 		return
 	}
