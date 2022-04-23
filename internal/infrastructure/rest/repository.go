@@ -6,6 +6,12 @@ import (
 	"net/http"
 	"rest-api-template/internal/domain/entities"
 	"rest-api-template/internal/domain/repositories"
+	"time"
+)
+
+const (
+	readTimeoutInSeconds  = 5
+	writeTimeoutInSeconds = 10
 )
 
 type RESTServer struct {
@@ -23,7 +29,9 @@ func NewRESTServer(
 		usecases: usecases,
 		logger:   logger,
 		httpServer: &http.Server{
-			Addr: fmt.Sprintf(":%d", port),
+			Addr:         fmt.Sprintf(":%d", port),
+			ReadTimeout:  readTimeoutInSeconds * time.Second,
+			WriteTimeout: writeTimeoutInSeconds * time.Second,
 		},
 	}
 }

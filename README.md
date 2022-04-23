@@ -37,11 +37,11 @@ This template implements a few basic CRUD operations, each of which has a specif
 | Endpoint                    | Method | Operation                                                                      |
 | --------------------------- | ------ | ------------------------------------------------------------------------------ |
 | /api/v1/health/             | GET    | A health check to ensure that the service has started correctly                |
-| /api/v1/contact/create/     | POST   | Create a new contact, with the parameters as the request body.                 |
-| /api/v1/contact/read/       | GET    | Read all contacts that are stored.                                             |
-| /api/v1/contact/read/{id}   | GET    | Read a contact whose ID is given as a parameter in the URL.                    |
-| /api/v1/contact/update/{id} | PUT    | Update a contact whose ID is in the URL, and body containing fields to update. |
-| /api/v1/contact/delete/{id} | POST   | Delete a contact whose ID is in the URL.                                       |
+| /api/v1/contacts/create/     | POST   | Create new contacts, with the parameters as the request body.                 |
+| /api/v1/contacts/read/       | GET    | Read all contacts that are stored.                                             |
+| /api/v1/contacts/read/{id}   | GET    | Read a contact whose ID is given as a parameter in the URL.                    |
+| /api/v1/contacts/update/{id} | PUT    | Update a contact whose ID is in the URL, and body containing fields to update. |
+| /api/v1/contacts/delete/{id} | POST   | Delete a contact whose ID is in the URL.                                       |
 
 ## Configuration
 

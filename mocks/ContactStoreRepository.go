@@ -16,8 +16,8 @@ type ContactStoreRepository struct {
 	mock.Mock
 }
 
-// Create provides a mock function with given fields: ctx, contact
-func (_m *ContactStoreRepository) Create(ctx context.Context, contact *entities.Contact) error {
+// CreateContact provides a mock function with given fields: ctx, contact
+func (_m *ContactStoreRepository) CreateContact(ctx context.Context, contact *entities.Contact) error {
 	ret := _m.Called(ctx, contact)
 
 	var r0 error
@@ -30,8 +30,8 @@ func (_m *ContactStoreRepository) Create(ctx context.Context, contact *entities.
 	return r0
 }
 
-// Delete provides a mock function with given fields: ctx, ID
-func (_m *ContactStoreRepository) Delete(ctx context.Context, ID string) error {
+// DeleteContactWithID provides a mock function with given fields: ctx, ID
+func (_m *ContactStoreRepository) DeleteContactWithID(ctx context.Context, ID string) error {
 	ret := _m.Called(ctx, ID)
 
 	var r0 error
@@ -44,31 +44,8 @@ func (_m *ContactStoreRepository) Delete(ctx context.Context, ID string) error {
 	return r0
 }
 
-// ReadMany provides a mock function with given fields: ctx
-func (_m *ContactStoreRepository) ReadMany(ctx context.Context) ([]*entities.Contact, error) {
-	ret := _m.Called(ctx)
-
-	var r0 []*entities.Contact
-	if rf, ok := ret.Get(0).(func(context.Context) []*entities.Contact); ok {
-		r0 = rf(ctx)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*entities.Contact)
-		}
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
-		r1 = rf(ctx)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// ReadOne provides a mock function with given fields: ctx, ID
-func (_m *ContactStoreRepository) ReadOne(ctx context.Context, ID string) (*entities.Contact, error) {
+// ReadContactWithID provides a mock function with given fields: ctx, ID
+func (_m *ContactStoreRepository) ReadContactWithID(ctx context.Context, ID string) (*entities.Contact, error) {
 	ret := _m.Called(ctx, ID)
 
 	var r0 *entities.Contact
@@ -90,8 +67,31 @@ func (_m *ContactStoreRepository) ReadOne(ctx context.Context, ID string) (*enti
 	return r0, r1
 }
 
-// Update provides a mock function with given fields: ctx, ID, contact
-func (_m *ContactStoreRepository) Update(ctx context.Context, ID string, contact *entities.Contact) (*entities.Contact, error) {
+// ReadContacts provides a mock function with given fields: ctx
+func (_m *ContactStoreRepository) ReadContacts(ctx context.Context) ([]*entities.Contact, error) {
+	ret := _m.Called(ctx)
+
+	var r0 []*entities.Contact
+	if rf, ok := ret.Get(0).(func(context.Context) []*entities.Contact); ok {
+		r0 = rf(ctx)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*entities.Contact)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = rf(ctx)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// UpdateContactWithID provides a mock function with given fields: ctx, ID, contact
+func (_m *ContactStoreRepository) UpdateContactWithID(ctx context.Context, ID string, contact *entities.Contact) (*entities.Contact, error) {
 	ret := _m.Called(ctx, ID, contact)
 
 	var r0 *entities.Contact

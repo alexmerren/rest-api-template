@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"os"
 	"os/signal"
@@ -28,8 +27,8 @@ func main() {
 
 	memDB := memdb.NewMemoryStoreAdapter()
 	usecases := usecases.NewRealContactUseCases(memDB, logger)
-	port, err := config.GetInt("server.port")
-	fmt.Println(err)
+
+	port, _ := config.GetInt("server.port")
 	server := rest.NewRESTServer(usecases, logger, port)
 
 	cancelChan := make(chan os.Signal, 1)

@@ -12,48 +12,49 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const testID = "test-contact-id"
-
-func TestGetContactByID_HappyPath(t *testing.T) {
+func TestListContacts_HappyPath(t *testing.T) {
 	//arrange
 	ctx := context.Background()
-	contact := &entities.Contact{
-		Name:     "Someone",
-		Age:      22,
-		Address:  "Somewhere",
-		Gender:   "Something",
-		Birthday: "Someday",
+	expectedContacts := []*entities.Contact{
+		{
+			ID:       testID,
+			Name:     "Someone",
+			Age:      22,
+			Address:  "Somewhere",
+			Gender:   "Something",
+			Birthday: "Someday",
+		},
 	}
 	mockLogger := new(mocks.Logger)
 	mockAdapter := new(mocks.ContactStoreRepository)
-	mockAdapter.On("ReadContactWithID", ctx, testID).Return(contact, nil).Once()
+	mockAdapter.On("ReadContacts", ctx).Return(expectedContacts, nil).Once()
 	defer mockAdapter.AssertExpectations(t)
 	usecases := usecases.NewRealContactUseCases(mockAdapter, mockLogger)
 
 	//act
-	returnedContact, err := usecases.GetContactByID(ctx, testID)
+	actualContacts, err := usecases.ListContacts(ctx)
 
 	//assert
 	assert.NoError(t, err)
-	assert.Equal(t, contact, returnedContact)
+	assert.Equal(t, expectedContacts, actualContacts)
 }
 
-func TestGetContactByID_AdapterErr(t *testing.T) {
+func TestListContacts_AdapterError(t *testing.T) {
 	//arrange
 	ctx := context.Background()
-	testErr := errors.New("test error")
 	logger, err := logger.NewZapLogger("debug")
 	assert.NoError(t, err)
-
+	expectedError := errors.New("mock error")
 	mockAdapter := new(mocks.ContactStoreRepository)
-	mockAdapter.On("ReadContactWithID", ctx, testID).Return(nil, testErr).Once()
+	mockAdapter.On("ReadContacts", ctx).Return(nil, expectedError).Once()
 	defer mockAdapter.AssertExpectations(t)
 	usecases := usecases.NewRealContactUseCases(mockAdapter, logger)
 
 	//act
-	contact, err := usecases.GetContactByID(ctx, testID)
+	contacts, err := usecases.ListContacts(ctx)
 
 	//assert
-	assert.NotNil(t, err)
-	assert.Nil(t, contact)
+	assert.Error(t, err)
+	assert.Nil(t, contacts)
+	assert.IsType(t, &entities.InternalError{}, err)
 }
