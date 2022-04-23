@@ -2,6 +2,7 @@ package memdb
 
 import (
 	"context"
+	"fmt"
 	"rest-api-template/internal/domain/entities"
 )
 
@@ -12,5 +13,5 @@ func (m *memoryStoreAdapter) ReadContactWithID(ctx context.Context, ID string) (
 		}
 	}
 
-	return nil, entities.NewNotFoundError("a contact with that ID could not be found", nil)
+	return nil, entities.NewNotFoundError(fmt.Sprintf("could not find contact with ID %s", ID), nil)
 }

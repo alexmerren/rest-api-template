@@ -49,11 +49,11 @@ func (c *Configuration) GetString(name string) (string, error) {
 
 func (c *Configuration) GetInt(name string) (int, error) {
 	rawValue := c.m[strings.ToLower(name)]
-	switch rawValue.(type) {
+	switch rawValue := rawValue.(type) {
 	case int:
-		return rawValue.(int), nil
+		return rawValue, nil
 	case string:
-		return strconv.Atoi(rawValue.(string))
+		return strconv.Atoi(rawValue)
 	default:
 		return 0, entities.NewNotFoundError("there was an error", nil)
 	}

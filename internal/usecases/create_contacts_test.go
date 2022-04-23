@@ -26,7 +26,7 @@ func TestCreateContacts_HappyPath(t *testing.T) {
 	}
 	mockLogger := new(mocks.Logger)
 	mockAdapter := new(mocks.ContactStoreRepository)
-	mockAdapter.On("Create", ctx, contacts[0]).Return(nil).Once()
+	mockAdapter.On("CreateContact", ctx, contacts[0]).Return(nil).Once()
 	defer mockAdapter.AssertExpectations(t)
 	usecases := usecases.NewRealContactUseCases(mockAdapter, mockLogger)
 
@@ -53,7 +53,7 @@ func TestCreateContacts_AdapterError(t *testing.T) {
 		},
 	}
 	mockAdapter := new(mocks.ContactStoreRepository)
-	mockAdapter.On("Create", ctx, contacts[0]).Return(testErr).Once()
+	mockAdapter.On("CreateContact", ctx, contacts[0]).Return(testErr).Once()
 	defer mockAdapter.AssertExpectations(t)
 	usecases := usecases.NewRealContactUseCases(mockAdapter, logger)
 

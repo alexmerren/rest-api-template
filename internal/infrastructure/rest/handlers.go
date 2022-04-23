@@ -56,20 +56,16 @@ func (s *RESTServer) ReadMany(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-type UpdateRequestBody struct {
-	Contact *entities.Contact `json:"contact"`
-}
-
 func (s *RESTServer) Update(w http.ResponseWriter, r *http.Request) {
-	var requestBody UpdateRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
+	var newContact *entities.Contact
+	if err := json.NewDecoder(r.Body).Decode(newContact); err != nil {
 		HandleError(w, r, entities.NewBadRequestError("could not decode JSON from Body", err))
 		return
 	}
 
 	vars := mux.Vars(r)
 	requestID := vars["id"]
-	contact, err := s.usecases.UpdateContactByID(context.Background(), requestID, requestBody.Contact)
+	contact, err := s.usecases.UpdateContactByID(context.Background(), requestID, newContact)
 	if err != nil {
 		HandleError(w, r, err)
 		return
@@ -97,5 +93,9 @@ func (s *RESTServer) Delete(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *RESTServer) Health(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(`{"message":"healthy!"}`))
+	_, err := w.Write([]byte(`{"message":"healthy!"}`))
+	if err != nil {
+		HandleError(w, r, entities.NewInternalError("could not write to response", err))
+		return
+	}
 }

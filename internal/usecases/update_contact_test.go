@@ -12,46 +12,51 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const testID = "test-contact-id"
+const testAddress = "test-new-address-location"
 
-func TestGetContactByID_HappyPath(t *testing.T) {
+func TestUpdateContactByID_HappyPath(t *testing.T) {
 	//arrange
 	ctx := context.Background()
-	contact := &entities.Contact{
+	expectedContact := &entities.Contact{
 		Name:     "Someone",
 		Age:      22,
-		Address:  "Somewhere",
+		Address:  testAddress,
 		Gender:   "Something",
 		Birthday: "Someday",
 	}
+	partialContact := &entities.Contact{
+		Address: testAddress,
+	}
 	mockLogger := new(mocks.Logger)
 	mockAdapter := new(mocks.ContactStoreRepository)
-	mockAdapter.On("ReadContactWithID", ctx, testID).Return(contact, nil).Once()
+	mockAdapter.On("UpdateContactWithID", ctx, testID, partialContact).Return(expectedContact, nil).Once()
 	defer mockAdapter.AssertExpectations(t)
 	usecases := usecases.NewRealContactUseCases(mockAdapter, mockLogger)
 
 	//act
-	returnedContact, err := usecases.GetContactByID(ctx, testID)
+	returnedContact, err := usecases.UpdateContactByID(ctx, testID, partialContact)
 
 	//assert
 	assert.NoError(t, err)
-	assert.Equal(t, contact, returnedContact)
+	assert.Equal(t, expectedContact, returnedContact)
 }
 
-func TestGetContactByID_AdapterErr(t *testing.T) {
+func TestUpdateContactByID_AdapterError(t *testing.T) {
 	//arrange
 	ctx := context.Background()
 	testErr := errors.New("test error")
 	logger, err := logger.NewZapLogger("debug")
 	assert.NoError(t, err)
-
+	partialContact := &entities.Contact{
+		Address: testAddress,
+	}
 	mockAdapter := new(mocks.ContactStoreRepository)
-	mockAdapter.On("ReadContactWithID", ctx, testID).Return(nil, testErr).Once()
+	mockAdapter.On("UpdateContactWithID", ctx, testID, partialContact).Return(nil, testErr).Once()
 	defer mockAdapter.AssertExpectations(t)
 	usecases := usecases.NewRealContactUseCases(mockAdapter, logger)
 
 	//act
-	contact, err := usecases.GetContactByID(ctx, testID)
+	contact, err := usecases.UpdateContactByID(ctx, testID, partialContact)
 
 	//assert
 	assert.NotNil(t, err)
