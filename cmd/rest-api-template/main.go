@@ -6,8 +6,8 @@ import (
 	"os"
 	"os/signal"
 	"rest-api-template/internal/adapters/config"
-	"rest-api-template/internal/adapters/logger"
-	"rest-api-template/internal/adapters/memdb"
+	"rest-api-template/internal/infrastructure/database"
+	"rest-api-template/internal/infrastructure/logger"
 	"rest-api-template/internal/infrastructure/rest"
 	"rest-api-template/internal/usecases"
 )
@@ -25,7 +25,7 @@ func main() {
 	}
 	defer logger.Cleanup()
 
-	memDB := memdb.NewMemoryStoreAdapter()
+	memDB := database.NewMemoryDatabase()
 	usecases := usecases.NewRealContactUseCases(memDB, logger)
 
 	port, _ := config.GetInt("server.port")
