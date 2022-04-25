@@ -26,6 +26,9 @@ github.com/mitchellh/reflectwalk
 # github.com/pmezard/go-difflib v1.0.0
 ## explicit
 github.com/pmezard/go-difflib/difflib
+# github.com/satori/go.uuid v1.2.0
+## explicit
+github.com/satori/go.uuid
 # github.com/stretchr/objx v0.1.0
 ## explicit
 github.com/stretchr/objx

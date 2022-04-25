@@ -3,8 +3,8 @@ package usecases_test
 import (
 	"context"
 	"errors"
-	"rest-api-template/internal/adapters/logger"
 	"rest-api-template/internal/domain/entities"
+	"rest-api-template/internal/infrastructure/logger"
 	"rest-api-template/internal/usecases"
 	"rest-api-template/mocks"
 	"testing"

@@ -4,7 +4,9 @@ import "net/http"
 
 func (s *RESTServer) loggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		s.logger.Debug(r.URL)
+		s.logger.
+			WithField("path", r.URL.Path).
+			Info(r.Method)
 		next.ServeHTTP(w, r)
 	})
 }

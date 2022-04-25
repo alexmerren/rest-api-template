@@ -60,3 +60,9 @@ func (z *ZapLogger) Info(msg interface{}) {
 func (z *ZapLogger) Debug(msg interface{}) {
 	z.logger.Debug(msg)
 }
+
+func (z *ZapLogger) WithField(name string, msg interface{}) repositories.Logger {
+	return &ZapLogger{
+		z.logger.With(name, msg),
+	}
+}

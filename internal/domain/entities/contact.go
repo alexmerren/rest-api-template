@@ -11,6 +11,23 @@ type Contact struct {
 	Gender   string `json:"gender"`
 }
 
+func NewContact(
+	name string,
+	age int,
+	birthday string,
+	address string,
+	gender string,
+) (*Contact, error) {
+	return &Contact{
+		ID:       NewUUID(),
+		Name:     name,
+		Age:      age,
+		Birthday: birthday,
+		Address:  address,
+		Gender:   gender,
+	}, nil
+}
+
 func (c Contact) Validate() error {
 	return validation.ValidateStruct(&c,
 		validation.Field(&c.Age, validation.Required),
